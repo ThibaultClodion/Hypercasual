@@ -21,10 +21,7 @@ public class PlayerController : MonoBehaviour
     {
         //For Test
         CreateNewCharacter();
-        CreateNewCharacter();
-        CreateNewCharacter();
-        CreateNewCharacter();
-        CreateNewCharacter();
+
 
         //Initialize the characters shoot
         StartCoroutine(CharactersShoot());

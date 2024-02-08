@@ -12,6 +12,9 @@ public class MapManager : MonoBehaviour
     [Header("Enemies")]
     [SerializeField] GameObject enemyGO;
 
+    [Header("Obstacles")]
+    [SerializeField] GameObject obstacleGO;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,10 +44,12 @@ public class MapManager : MonoBehaviour
         //Update Roads Speed
         UpdateRoadsSpeed();
 
-        //Instantiate enemies (test)
-        InstantiateEnemies(newRoad, 50);
+        //Instantiate enemies and obstacles (test)
+        InstantiateEnemies(newRoad, 30);
+        InstantiateObstacles(newRoad, 10);
     }
 
+    #region Enemies
     private void InstantiateEnemies(GameObject parent, int nbEnemies)
     {
         float maxX = parent.transform.localScale.x * 5 - 1;
@@ -56,11 +61,31 @@ public class MapManager : MonoBehaviour
         }
     }
 
+
     private void InstantiateEnemy(Vector3 position, GameObject parent)
     {
         GameObject newEnnemy = Instantiate(enemyGO, parent.transform.position + position, Quaternion.identity);
         newEnnemy.transform.SetParent(parent.transform);
     }
+    #endregion
+
+    #region Obstacles
+    private void InstantiateObstacles(GameObject parent, int nbObstacles)
+    {
+        float[] xPosition = new float[] { -3, 0, 3 };
+        float maxZ = parent.transform.localScale.z * 5 - 1;
+
+        for (int i = 0; i < nbObstacles; i++)
+        {
+            InstantiateObstacle(new Vector3(xPosition[Random.Range(0, 3)], 1, Random.Range(-maxZ, maxZ)), parent);
+        }
+    }
+    private void InstantiateObstacle(Vector3 position, GameObject parent)
+    {
+        GameObject newEnnemy = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
+        newEnnemy.transform.SetParent(parent.transform);
+    }
+    #endregion
 
     //When it need a new road
     private void OnTriggerExit(Collider other)
