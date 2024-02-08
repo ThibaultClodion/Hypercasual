@@ -12,7 +12,9 @@ public class PlayerController : MonoBehaviour
 
     //Character Data
     [SerializeField] GameObject characterGO;
+    [SerializeField] GameObject bulletGO;
     private List<Character> characters;
+    private float fireSpeed = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -23,15 +25,37 @@ public class PlayerController : MonoBehaviour
         CreateNewCharacter();
         CreateNewCharacter();
         CreateNewCharacter();
+
+        //Initialize the characters shoot
+        StartCoroutine(CharactersShoot());
     }
 
     private void FixedUpdate()
     {
-        //Move each characters
+        //Move each character on the troup
         foreach (Character character in characters) 
         {
-            character.Move(movePosition);
+            if(character != null)
+            {
+                character.Move(movePosition);
+            }
         }
+    }
+
+    IEnumerator CharactersShoot()
+    {
+        yield return new WaitForSeconds(fireSpeed);
+
+        //Make the character fire
+        foreach (Character character in characters)
+        {
+            if (character != null)
+            {
+                character.Fire(bulletGO, new Vector3(0, 0, 0.80f));
+            }
+        }
+
+        StartCoroutine(CharactersShoot());
     }
 
     private void CreateNewCharacter()
@@ -41,6 +65,21 @@ public class PlayerController : MonoBehaviour
 
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity, transform);
         characters.Add(newCharacter.GetComponent<Character>());
+
+        //Update to don't have too much null object on the characters list
+        UpdateCharacters();
+    }
+
+    private void UpdateCharacters()
+    {
+        //Find if there is null character on the list
+        foreach (Character character in characters)
+        {
+            if (character == null)
+            {
+                characters.Remove(character);
+            }
+        }
     }
 
     private void OnMove(InputValue inputPosition)

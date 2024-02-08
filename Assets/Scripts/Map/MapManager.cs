@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
+    [Header("Roads")]
     [SerializeField] private GameObject road;
     [SerializeField] private List<Road> actualRoads;
     [SerializeField] private float roadSpeed;
+
+    [Header("Enemies")]
+    [SerializeField] GameObject enemyGO;
 
     // Start is called before the first frame update
     void Start()
     {
         UpdateRoadsSpeed();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void UpdateRoadsSpeed()
@@ -42,11 +40,34 @@ public class MapManager : MonoBehaviour
 
         //Update Roads Speed
         UpdateRoadsSpeed();
+
+        //Instantiate enemies (test)
+        InstantiateEnemies(newRoad, 50);
+    }
+
+    private void InstantiateEnemies(GameObject parent, int nbEnemies)
+    {
+        float maxX = parent.transform.localScale.x * 5 - 1;
+        float maxZ = parent.transform.localScale.z * 5 - 1;
+
+        for(int i = 0; i < nbEnemies; i++) 
+        {
+            InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), parent);
+        }
+    }
+
+    private void InstantiateEnemy(Vector3 position, GameObject parent)
+    {
+        GameObject newEnnemy = Instantiate(enemyGO, parent.transform.position + position, Quaternion.identity);
+        newEnnemy.transform.SetParent(parent.transform);
     }
 
     //When it need a new road
     private void OnTriggerExit(Collider other)
     {
-        CreateRoad(gameObject.transform.position);
+        if(other.gameObject.tag == "Road")
+        {
+            CreateRoad(gameObject.transform.position);
+        }
     }
 }

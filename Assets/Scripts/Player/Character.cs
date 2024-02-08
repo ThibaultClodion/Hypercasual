@@ -8,4 +8,9 @@ public class Character : MonoBehaviour
     {
         transform.position = Vector3.Lerp(transform.position, movePosition, Time.deltaTime);
     }
+
+    public void Fire(GameObject bullet, Vector3 offset)
+    {
+        Instantiate(bullet, transform.position + offset, Quaternion.identity);
+    }
 }

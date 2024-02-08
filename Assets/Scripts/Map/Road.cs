@@ -7,7 +7,7 @@ public class Road : MonoBehaviour
     private float movementSpeed;
 
     // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         transform.Translate(-transform.forward * Time.deltaTime * movementSpeed);
     }
