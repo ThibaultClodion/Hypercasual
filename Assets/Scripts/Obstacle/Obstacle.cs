@@ -6,27 +6,33 @@ using static UnityEngine.GraphicsBuffer;
 public class Obstacle : MonoBehaviour
 {
     //Datas
-    [SerializeField] DataObstacle datas;
+    private float moveSpeed;
     private float actualHP;
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Initialize the HP
-        actualHP = datas.maxHP;
-    }
+    private float gaugeIncrement;
 
     private void FixedUpdate()
     {
-        Move(new Vector3(transform.position.x,transform.localScale.y / 2,0));
+        Move(new Vector3(transform.position.x,transform.localScale.y / 2,-50));
     }
 
+    #region Movement
     private void Move(Vector3 movePosition)
     {
-        transform.position = Vector3.MoveTowards(transform.position, movePosition, datas.moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, movePosition, moveSpeed * Time.deltaTime);
+    }
+    #endregion
+
+    #region DataManagement
+    public void Init(float hp, float speed, float gauge)
+    {
+        actualHP = hp;
+        moveSpeed = speed;
+        gaugeIncrement = gauge;
     }
 
+    #endregion
+
+    #region CollisionAndTrigger
     private void OnCollisionEnter(Collision collision)
     {
         //If enter a collision with a player then destroy both
@@ -46,11 +52,13 @@ public class Obstacle : MonoBehaviour
             actualHP -= other.GetComponent<Bullet>().Damage();
             Destroy(other.gameObject);
 
-            //Destroy if he has no health
-            if(actualHP < 0)
+            //Destroy and increment the gauge if the enemy died
+            if (actualHP < 0)
             {
+                GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().increaseGauge(gaugeIncrement);
                 Destroy(this.gameObject);
             }
         }
     }
+    #endregion
 }

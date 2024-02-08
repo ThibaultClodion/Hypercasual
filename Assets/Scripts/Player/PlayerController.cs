@@ -15,11 +15,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject bulletGO;
     private List<Character> characters;
     private float fireSpeed = 0.5f;
+    private float gauge = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        //For Test
+        //First Character to spawn
         CreateNewCharacter();
 
 
@@ -39,6 +40,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region Movement
+    private void OnMove(InputValue inputPosition)
+    {
+        //Get the position of the touch (-1 is necessary)
+        touchPosition = new Vector3(inputPosition.Get<Vector2>().x, inputPosition.Get<Vector2>().y, mainCamera.transform.position.z);
+        touchPosition = mainCamera.ScreenToWorldPoint(touchPosition) * -1;
+
+        //Put x and z to 0 to only move horizontaly
+        touchPosition.y = 1;
+        touchPosition.z = 0;
+
+        //Update the movePosition to the corrected touchPosition
+        movePosition = touchPosition;
+
+        //This avoid bugs (going through wall)
+        if (movePosition.x > 10f)
+        {
+            movePosition.x = 10f;
+        }
+        else if(movePosition.x < -10f)
+        {
+            movePosition.x = -10f;
+        }
+    }
+    #endregion
+
+    #region Shoot
     IEnumerator CharactersShoot()
     {
         yield return new WaitForSeconds(fireSpeed);
@@ -53,6 +81,23 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine(CharactersShoot());
+    }
+    #endregion
+
+    #region CharactersManagement
+
+    public void increaseGauge(float increment)
+    {
+        gauge += increment;
+
+        int cap = 20;
+
+        //Add a character if the gauge is greater than the cap
+        if(gauge > cap)
+        {
+            CreateNewCharacter();
+            gauge = 0;
+        }
     }
 
     private void CreateNewCharacter()
@@ -78,18 +123,5 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    private void OnMove(InputValue inputPosition)
-    {
-        //Get the position of the touch (-1 is necessary)
-        touchPosition = new Vector3(inputPosition.Get<Vector2>().x, inputPosition.Get<Vector2>().y, mainCamera.transform.position.z);
-        touchPosition = mainCamera.ScreenToWorldPoint(touchPosition) * -1;
-
-        //Put x and z to 0 to only move horizontaly
-        touchPosition.y = 1;
-        touchPosition.z = 0;
-
-        //Update the movePosition to the corrected touchPosition
-        movePosition = touchPosition;
-    }
+    #endregion
 }

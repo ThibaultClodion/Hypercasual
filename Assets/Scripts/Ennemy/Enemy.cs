@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class Ennemy : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
     //Datas
-    [SerializeField] DataEnnemy datas;
+    private float moveSpeed;
     private float actualHP;
+    private float gaugeIncrement;
     private GameObject targetedCharacter;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        //Initialize the HP
-        actualHP = datas.maxHP;
-
         //Initialize the Targeted Character
         UpdateTargetedCharacter();
     }
@@ -35,6 +33,7 @@ public class Ennemy : MonoBehaviour
         }
     }
 
+    #region Movement
     private void UpdateTargetedCharacter()
     {
         //Find a member of the troup
@@ -43,9 +42,22 @@ public class Ennemy : MonoBehaviour
 
     private void Move(Vector3 movePosition)
     {
-        transform.position = Vector3.MoveTowards(transform.position, movePosition, datas.moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, movePosition, moveSpeed * Time.deltaTime);
+    }
+    #endregion
+
+    #region DataManagement
+
+    public void Init(float hp, float speed, float gauge)
+    {
+        actualHP = hp;
+        moveSpeed = speed;
+        gaugeIncrement = gauge;
     }
 
+    #endregion
+
+    #region CollisionsAndTrigger
     private void OnCollisionEnter(Collision collision)
     {
         //If enter a collision with a player then destroy both
@@ -65,11 +77,13 @@ public class Ennemy : MonoBehaviour
             actualHP -= other.GetComponent<Bullet>().Damage();
             Destroy(other.gameObject);
 
-            //Destroy if he has no health
+            //Destroy and increment the gauge if the enemy died
             if(actualHP < 0)
             {
+                GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().increaseGauge(gaugeIncrement);
                 Destroy(this.gameObject);
             }
         }
     }
+    #endregion
 }

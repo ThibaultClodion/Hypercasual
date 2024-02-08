@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [Header("Roads")]
     [SerializeField] private GameObject road;
@@ -11,9 +11,16 @@ public class MapManager : MonoBehaviour
 
     [Header("Enemies")]
     [SerializeField] GameObject enemyGO;
+    [SerializeField] float enemySpeed;
+    [SerializeField] float enemyHp;
+    [SerializeField] float enemyGaugeIncrement;
+    
 
     [Header("Obstacles")]
     [SerializeField] GameObject obstacleGO;
+    [SerializeField] float obstacleSpeed;
+    [SerializeField] float obstacleHp;
+    [SerializeField] float ObstacleGaugeIncrement;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +28,8 @@ public class MapManager : MonoBehaviour
         UpdateRoadsSpeed();
     }
 
+
+    #region RoadManagement
     private void UpdateRoadsSpeed()
     {
         foreach (Road road in actualRoads) 
@@ -48,6 +57,7 @@ public class MapManager : MonoBehaviour
         InstantiateEnemies(newRoad, 30);
         InstantiateObstacles(newRoad, 10);
     }
+    #endregion
 
     #region Enemies
     private void InstantiateEnemies(GameObject parent, int nbEnemies)
@@ -57,15 +67,19 @@ public class MapManager : MonoBehaviour
 
         for(int i = 0; i < nbEnemies; i++) 
         {
-            InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), parent);
+             InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), parent);
         }
     }
 
 
     private void InstantiateEnemy(Vector3 position, GameObject parent)
     {
+        //Instantiate the GameObject
         GameObject newEnnemy = Instantiate(enemyGO, parent.transform.position + position, Quaternion.identity);
         newEnnemy.transform.SetParent(parent.transform);
+
+        //Instantiate the script Enemy
+        newEnnemy.GetComponent<Enemy>().Init(enemyHp, enemySpeed, enemyGaugeIncrement);
     }
     #endregion
 
@@ -77,16 +91,21 @@ public class MapManager : MonoBehaviour
 
         for (int i = 0; i < nbObstacles; i++)
         {
-            InstantiateObstacle(new Vector3(xPosition[Random.Range(0, 3)], 1, Random.Range(-maxZ, maxZ)), parent);
+            InstantiateObstacle(new Vector3(xPosition[Random.Range(0, 3)], 1.5f, Random.Range(-maxZ, maxZ)), parent);
         }
     }
     private void InstantiateObstacle(Vector3 position, GameObject parent)
     {
-        GameObject newEnnemy = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
-        newEnnemy.transform.SetParent(parent.transform);
+        //Instantiate the GameObject
+        GameObject newObstacle = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
+        newObstacle.transform.SetParent(parent.transform);
+
+        //Initialize the script Obstacle
+        newObstacle.GetComponent<Obstacle>().Init(obstacleHp, obstacleSpeed, enemyGaugeIncrement);
     }
     #endregion
 
+    #region CollisionAndTrigger
     //When it need a new road
     private void OnTriggerExit(Collider other)
     {
@@ -95,4 +114,5 @@ public class MapManager : MonoBehaviour
             CreateRoad(gameObject.transform.position);
         }
     }
+    #endregion
 }
