@@ -975,7 +975,8 @@ MonoBehaviour:
   obstacleGO: {fileID: 7013966029745170741, guid: 6dff1f0fe03c5f745873475d9a904587, type: 3}
   obstacleSpeed: 10
   obstacleHp: 20
-  ObstacleGaugeIncrement: 5
+  obstacleGaugeIncrement: 0
+  playerController: {fileID: 1299892821}
 --- !u!65 &1410462064
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1075,7 +1076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 777622248180254614, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 200
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 777622248180254614, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
       propertyPath: m_LocalRotation.w

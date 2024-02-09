@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject bulletGO;
     private List<Character> characters;
     private float fireSpeed = 0.5f;
+    private float fireDamage = 5f;
+    private float bulletSpeed = 15f;
     private float gauge = 0f;
 
     // Start is called before the first frame update
@@ -86,20 +88,6 @@ public class PlayerController : MonoBehaviour
 
     #region CharactersManagement
 
-    public void increaseGauge(float increment)
-    {
-        gauge += increment;
-
-        int cap = 20;
-
-        //Add a character if the gauge is greater than the cap
-        if(gauge > cap)
-        {
-            CreateNewCharacter();
-            gauge = 0;
-        }
-    }
-
     private void CreateNewCharacter()
     {
         //Random position of spawn
@@ -121,7 +109,39 @@ public class PlayerController : MonoBehaviour
             {
                 characters.Remove(character);
             }
+            else
+            {
+                character.Init(bulletSpeed, fireDamage);
+            }
         }
     }
+    #endregion
+
+    #region Balance
+
+    public void increaseGauge(float increment)
+    {
+        gauge += increment;
+
+        int cap = 10; //For test purpose
+
+        //Add a character if the gauge is greater than the cap
+        if (gauge > cap)
+        {
+            CreateNewCharacter();
+            gauge = 0;
+        }
+    }
+
+    public float getFirePower(float seconds)
+    {
+        //To avoid bug, update the Characters
+        UpdateCharacters();
+
+        //Return the FirePower of the troups during x seconds
+        float nbFirePerSeconds = 1 / fireSpeed;
+        return nbFirePerSeconds * seconds * fireDamage * characters.Count;
+    }
+
     #endregion
 }

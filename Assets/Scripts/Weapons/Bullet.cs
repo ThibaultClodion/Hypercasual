@@ -17,6 +17,12 @@ public class Bullet : MonoBehaviour
         transform.Translate(movePosition * moveSpeed * Time.deltaTime);
     }
 
+    public void Init(float bulletSpeed, float bulletDamage)
+    {
+        moveSpeed = bulletSpeed;
+        damage = bulletDamage;
+    }
+
     public float Damage()
     {
         return damage;

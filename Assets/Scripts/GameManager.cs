@@ -14,18 +14,25 @@ public class GameManager : MonoBehaviour
     [SerializeField] float enemySpeed;
     [SerializeField] float enemyHp;
     [SerializeField] float enemyGaugeIncrement;
+    private int minEnemiesSpawn = 20;
+    private int maxEnemiesSpawn = 60;
     
 
     [Header("Obstacles")]
     [SerializeField] GameObject obstacleGO;
     [SerializeField] float obstacleSpeed;
     [SerializeField] float obstacleHp;
-    [SerializeField] float ObstacleGaugeIncrement;
+    [SerializeField] float obstacleGaugeIncrement;
+    private float[] xPositions = new float[] { -3, 0, 3 };
+
+    [Header("Player")]
+    [SerializeField] PlayerController playerController;
 
     // Start is called before the first frame update
     void Start()
     {
         UpdateRoadsSpeed();
+
     }
 
 
@@ -53,14 +60,38 @@ public class GameManager : MonoBehaviour
         //Update Roads Speed
         UpdateRoadsSpeed();
 
-        //Instantiate enemies and obstacles (test)
-        InstantiateEnemies(newRoad, 30);
-        InstantiateObstacles(newRoad, 10);
+        int nbEnemiesSpawn = Random.Range(minEnemiesSpawn, maxEnemiesSpawn);
+
+        //Define the hp of entity
+        float roadHp = getRoadHp();
+        enemyHp = roadHp / nbEnemiesSpawn;
+        obstacleHp = roadHp * 10 / nbEnemiesSpawn;
+
+        Debug.Log(getRatio_hp_fp());
+
+        //Define the max X and Z position
+        float maxX = newRoad.transform.localScale.x * 5 - 1;
+        float maxZ = newRoad.transform.localScale.z * 5 - 1;
+        
+        //Instiante the entities
+        for (int i = 0; i <  nbEnemiesSpawn; i++) 
+        {
+            if (Random.Range(0,20) == 0)
+            {
+                InstantiateObstacle(new Vector3(xPositions[Random.Range(0, 3)], 1.5f, Random.Range(-maxZ, maxZ)), newRoad);
+            }
+            else
+            {
+                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), newRoad);
+            }
+            
+        }
     }
+
     #endregion
 
     #region Enemies
-    private void InstantiateEnemies(GameObject parent, int nbEnemies)
+    /*private void InstantiateEnemies(GameObject parent, int nbEnemies)
     {
         float maxX = parent.transform.localScale.x * 5 - 1;
         float maxZ = parent.transform.localScale.z * 5 - 1;
@@ -69,7 +100,7 @@ public class GameManager : MonoBehaviour
         {
              InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), parent);
         }
-    }
+    }*/
 
 
     private void InstantiateEnemy(Vector3 position, GameObject parent)
@@ -84,7 +115,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Obstacles
-    private void InstantiateObstacles(GameObject parent, int nbObstacles)
+    /*private void InstantiateObstacles(GameObject parent, int nbObstacles)
     {
         float[] xPosition = new float[] { -3, 0, 3 };
         float maxZ = parent.transform.localScale.z * 5 - 1;
@@ -93,7 +124,8 @@ public class GameManager : MonoBehaviour
         {
             InstantiateObstacle(new Vector3(xPosition[Random.Range(0, 3)], 1.5f, Random.Range(-maxZ, maxZ)), parent);
         }
-    }
+    }*/
+
     private void InstantiateObstacle(Vector3 position, GameObject parent)
     {
         //Instantiate the GameObject
@@ -101,8 +133,53 @@ public class GameManager : MonoBehaviour
         newObstacle.transform.SetParent(parent.transform);
 
         //Initialize the script Obstacle
-        newObstacle.GetComponent<Obstacle>().Init(obstacleHp, obstacleSpeed, enemyGaugeIncrement);
+        newObstacle.GetComponent<Obstacle>().Init(obstacleHp, obstacleSpeed, obstacleGaugeIncrement);
     }
+    #endregion
+
+    #region Balancing
+    private float getTime()
+    {
+        return Time.realtimeSinceStartup;
+    }
+
+    private float getFullRoadTime()
+    {
+        return road.transform.localScale.z * 10 / roadSpeed;
+    }
+
+    private float getFirePower()
+    {
+        return playerController.getFirePower(getFullRoadTime());
+    }
+
+    private float getCoefficient(float yOrigin,float xOrigin, float yFinish, float xFinish)
+    {
+        return (yFinish - yOrigin) / (xFinish - xOrigin);
+    }
+
+    private float getRatio_hp_fp()
+    {
+        float min = getTime() / 60;
+
+        //First linear function
+        if(min < 2f)
+        {
+            return 0.5f + getCoefficient(0.5f, 0, 0.8f, 2) * min;
+        }
+        else
+        {
+            return 0.5f + getCoefficient(0.8f, 2, 1.5f, 30) * min;
+        }
+    }
+
+    private float getRoadHp()
+    {
+        float roadHpmin = 0; // For Later Balance
+
+        return Mathf.Max(roadHpmin, getRatio_hp_fp() * getFirePower());
+    }
+
     #endregion
 
     #region CollisionAndTrigger
