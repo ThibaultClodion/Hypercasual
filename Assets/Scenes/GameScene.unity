@@ -969,11 +969,11 @@ MonoBehaviour:
   - {fileID: 2489417172947099921}
   roadSpeed: 10
   enemyGO: {fileID: 7692199835950036531, guid: 639f1b668fd896e4ea8b5d23dd59ddf1, type: 3}
-  enemySpeed: 10
+  enemySpeed: 5
   enemyHp: 5
   enemyGaugeIncrement: 1
   obstacleGO: {fileID: 7013966029745170741, guid: 6dff1f0fe03c5f745873475d9a904587, type: 3}
-  obstacleSpeed: 10
+  obstacleSpeed: 3
   obstacleHp: 20
   obstacleGaugeIncrement: 0
   playerController: {fileID: 1299892821}
@@ -1109,6 +1109,10 @@ PrefabInstance:
     - target: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
       propertyPath: m_Name
       value: Road
+      objectReference: {fileID: 0}
+    - target: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

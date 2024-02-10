@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     private float actualHP;
     private float gaugeIncrement;
     private GameObject targetedCharacter;
+    private float detectionDistance = 30f;
     
 
     // Start is called before the first frame update
@@ -24,7 +25,11 @@ public class Enemy : MonoBehaviour
         //If the targetedCharacter still exist then run on Him
         if(targetedCharacter != null) 
         {
-            Move(targetedCharacter.transform.position);
+            //Move to the player if he is close
+            if(Vector3.Distance(transform.position, targetedCharacter.transform.position) < detectionDistance)
+            {
+                Move(targetedCharacter.transform.position);
+            }
         }
         //Else find another targetedCharacter
         else

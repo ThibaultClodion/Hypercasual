@@ -32,8 +32,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Avoid Bug if the List changes
+        List<Character> currentcharacters = new List<Character>(characters);
+
         //Move each character on the troup
-        foreach (Character character in characters) 
+        foreach (Character character in currentcharacters) 
         {
             if(character != null)
             {
@@ -73,8 +76,11 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(fireSpeed);
 
+        //Avoid Bug if the List changes
+        List<Character> currentcharacters = new List<Character>(characters);
+
         //Make the character fire
-        foreach (Character character in characters)
+        foreach (Character character in currentcharacters)
         {
             if (character != null)
             {
@@ -89,9 +95,13 @@ public class PlayerController : MonoBehaviour
     #region CharactersManagement
 
     private void CreateNewCharacter()
-    {
-        //Random position of spawn
-        Vector3 spawnPosition = new Vector3(Random.Range(-3f,3f), 1, Random.Range(-1f, 3f));
+    {    
+        //Find a spawn Position that don't collapse with other characters
+        Vector3 spawnPosition = new Vector3(Random.Range(-3f,3f), 1, Random.Range(-3f, 3f));
+        while(Physics.OverlapSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.5f, 3).Length > 1)
+        {
+            spawnPosition = new Vector3(Random.Range(-3f, 3f), 1, Random.Range(-1f, 3f));
+        }
 
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity, transform);
         characters.Add(newCharacter.GetComponent<Character>());
@@ -102,8 +112,11 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateCharacters()
     {
+        //Avoid Bug if the List changes
+        List<Character> currentcharacters = new List<Character>(characters);
+
         //Find if there is null character on the list
-        foreach (Character character in characters)
+        foreach (Character character in currentcharacters)
         {
             if (character == null)
             {
@@ -123,7 +136,7 @@ public class PlayerController : MonoBehaviour
     {
         gauge += increment;
 
-        int cap = 10; //For test purpose
+        int cap = 1; //For test purpose
 
         //Add a character if the gauge is greater than the cap
         if (gauge > cap)
