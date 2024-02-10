@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         UpdateRoadsSpeed();
-
     }
 
 
@@ -66,8 +65,6 @@ public class GameManager : MonoBehaviour
         float roadHp = getRoadHp();
         enemyHp = roadHp / nbEnemiesSpawn;
         obstacleHp = roadHp * 10 / nbEnemiesSpawn;
-
-        Debug.Log(getRatio_hp_fp());
 
         //Define the max X and Z position
         float maxX = newRoad.transform.localScale.x * 5 - 1;

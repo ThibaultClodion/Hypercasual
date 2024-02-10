@@ -13,14 +13,14 @@ public class PlayerController : MonoBehaviour
     //Character Data
     [SerializeField] GameObject characterGO;
     [SerializeField] GameObject bulletGO;
-    private List<Character> characters;
+    private List<Character> characters = new List<Character>();
     private float fireSpeed = 0.5f;
     private float fireDamage = 5f;
     private float bulletSpeed = 15f;
     private float gauge = 0f;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //First Character to spawn
         CreateNewCharacter();
