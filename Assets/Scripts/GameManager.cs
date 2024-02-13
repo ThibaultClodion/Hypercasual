@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float obstacleSpeed;
     [SerializeField] float obstacleHp;
     [SerializeField] float obstacleGaugeIncrement;
-    private float[] xPositions = new float[] { -3, 0, 3 };
+    private float[] xPositions = new float[] { -5, 0, 5 };
 
     [Header("Player")]
     [SerializeField] PlayerController playerController;

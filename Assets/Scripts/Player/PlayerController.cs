@@ -5,10 +5,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    //Datas use for Movement
-    [SerializeField] Camera mainCamera;
-    private Vector3 touchPosition;
-    private Vector3 movePosition;
+    //Datas use for Camera
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private FollowCharacter followCharacter;
+
+    //Datas use for movement
+    private RaycastHit hit;
+    private PlayerInput playerInput;
 
     //Character Data
     [SerializeField] GameObject characterGO;
@@ -22,9 +25,11 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        //get components
+        playerInput = GetComponent<PlayerInput>();
+
         //First Character to spawn
         CreateNewCharacter();
-
 
         //Initialize the characters shoot
         StartCoroutine(CharactersShoot());
@@ -34,6 +39,9 @@ public class PlayerController : MonoBehaviour
     {
         //Avoid Bug if the List changes
         List<Character> currentcharacters = new List<Character>(characters);
+
+        //Get the movePosition
+        Vector3 movePosition = FindMovePosition(playerInput.actions["Move"].ReadValue<Vector2>());
 
         //Move each character on the troup
         foreach (Character character in currentcharacters) 
@@ -46,28 +54,20 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Movement
-    private void OnMove(InputValue inputPosition)
+    private Vector3 FindMovePosition(Vector2 inputPosition)
     {
-        //Get the position of the touch (-1 is necessary)
-        touchPosition = new Vector3(inputPosition.Get<Vector2>().x, inputPosition.Get<Vector2>().y, mainCamera.transform.position.z);
-        touchPosition = mainCamera.ScreenToWorldPoint(touchPosition) * -1;
+        Ray ray = mainCamera.ScreenPointToRay(inputPosition);
 
-        //Put x and z to 0 to only move horizontaly
-        touchPosition.y = 1;
-        touchPosition.z = 0;
+        Vector3 movePosition = new Vector3(0,1,0);
 
-        //Update the movePosition to the corrected touchPosition
-        movePosition = touchPosition;
-
-        //This avoid bugs (going through wall)
-        if (movePosition.x > 10f)
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            movePosition.x = 10f;
+            movePosition = hit.point;
+            movePosition.y = 1;
+            movePosition.z = 0;
         }
-        else if(movePosition.x < -10f)
-        {
-            movePosition.x = -10f;
-        }
+
+        return movePosition;
     }
     #endregion
 
@@ -97,10 +97,11 @@ public class PlayerController : MonoBehaviour
     private void CreateNewCharacter()
     {    
         //Find a spawn Position that don't collapse with other characters
-        Vector3 spawnPosition = new Vector3(Random.Range(-3f,3f), 1, Random.Range(-3f, 3f));
+        Vector3 spawnPosition = new Vector3(Random.Range(-5f,5f), 1, Random.Range(0, 3f));
+
         while(Physics.OverlapSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.5f, 3).Length > 1)
         {
-            spawnPosition = new Vector3(Random.Range(-3f, 3f), 1, Random.Range(-1f, 3f));
+            spawnPosition = new Vector3(Random.Range(-5f, 5f), 1, Random.Range(0, 3f));
         }
 
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity, transform);
@@ -127,6 +128,9 @@ public class PlayerController : MonoBehaviour
                 character.Init(bulletSpeed, fireDamage);
             }
         }
+
+        //Update the camera
+        followCharacter.UpdateTargets(currentcharacters);
     }
     #endregion
 
