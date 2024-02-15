@@ -9,10 +9,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private FollowCharacter followCharacter;
 
-    //Datas use for movement
-    private RaycastHit hit;
-    private PlayerInput playerInput;
-
     //Character Data
     [SerializeField] GameObject characterGO;
     [SerializeField] GameObject bulletGO;
@@ -20,62 +16,44 @@ public class PlayerController : MonoBehaviour
     private float fireSpeed = 0.5f;
     private float fireDamage = 5f;
     private float bulletSpeed = 15f;
+    private float moveSpeed = 5f;
     private float gauge = 0f;
 
     // Start is called before the first frame update
     void Awake()
     {
-        //get components
-        playerInput = GetComponent<PlayerInput>();
-
         //First Character to spawn
         CreateNewCharacter();
 
         //Initialize the characters shoot
-        StartCoroutine(CharactersShoot());
+        ChangeCharactersShoot();
     }
 
-    private void FixedUpdate()
+
+    #region Movement
+    private void OnMove(InputValue inputPosition)
     {
         //Avoid Bug if the List changes
         List<Character> currentcharacters = new List<Character>(characters);
 
-        //Get the movePosition
-        Vector3 movePosition = FindMovePosition(playerInput.actions["Move"].ReadValue<Vector2>());
+        Vector3 movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
 
-        //Move each character on the troup
-        foreach (Character character in currentcharacters) 
+        //Change Move for each characters
+        foreach (Character character in currentcharacters)
         {
-            if(character != null)
+            if (character != null)
             {
-                character.Move(movePosition);
+                character.ChangeMove(movement);
             }
         }
-    }
 
-    #region Movement
-    private Vector3 FindMovePosition(Vector2 inputPosition)
-    {
-        Ray ray = mainCamera.ScreenPointToRay(inputPosition);
 
-        Vector3 movePosition = new Vector3(0,1,0);
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            movePosition = hit.point;
-            movePosition.y = 1;
-            movePosition.z = 0;
-        }
-
-        return movePosition;
     }
     #endregion
 
     #region Shoot
-    IEnumerator CharactersShoot()
+    private void ChangeCharactersShoot()
     {
-        yield return new WaitForSeconds(fireSpeed);
-
         //Avoid Bug if the List changes
         List<Character> currentcharacters = new List<Character>(characters);
 
@@ -84,11 +62,9 @@ public class PlayerController : MonoBehaviour
         {
             if (character != null)
             {
-                character.Fire(bulletGO, new Vector3(0, 0, 0.80f));
+                character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
             }
         }
-
-        StartCoroutine(CharactersShoot());
     }
     #endregion
 
@@ -105,6 +81,7 @@ public class PlayerController : MonoBehaviour
         }
 
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity, transform);
+        newCharacter.GetComponent<Character>().Init(moveSpeed);
         characters.Add(newCharacter.GetComponent<Character>());
 
         //Update to don't have too much null object on the characters list
@@ -125,7 +102,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                character.Init(bulletSpeed, fireDamage);
+                character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
             }
         }
 

@@ -32,11 +32,14 @@ public class FollowCharacter : MonoBehaviour
 
         foreach (Character character in characters)
         {
-            Transform characterTransform = character.GetComponent<Transform>();
-
-            if (characterTransform != null && group.FindMember(characterTransform) == -1)
+            if(character != null)
             {
-                group.AddMember(characterTransform, 1, 0.5f);
+                Transform characterTransform = character.GetComponent<Transform>();
+
+                if (group.FindMember(characterTransform) == -1)
+                {
+                    group.AddMember(characterTransform, 1, 0.5f);
+                }
             }
         }
     }
