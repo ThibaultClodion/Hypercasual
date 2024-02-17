@@ -1064,6 +1064,8 @@ GameObject:
   - component: {fileID: 1299892820}
   - component: {fileID: 1299892821}
   - component: {fileID: 1299892822}
+  - component: {fileID: 1299892823}
+  - component: {fileID: 1299892824}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: PlayerController
@@ -1100,7 +1102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 963194227}
   followCharacter: {fileID: 1642539435}
-  characterGO: {fileID: 5955716836215132994, guid: 8bb40190d848e8a46901b1751d26dcd8, type: 3}
+  characterGO: {fileID: 5955716836215132994, guid: 82bbf1602c4b9044482ad496b58cd009, type: 3}
   bulletGO: {fileID: 258810143443160155, guid: 976a4358404478e4abb1f272fb57ff3b, type: 3}
 --- !u!114 &1299892822
 MonoBehaviour:
@@ -1132,6 +1134,56 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!136 &1299892823
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299892815}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1299892824
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299892815}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 116
+  m_CollisionDetection: 0
 --- !u!1 &1361512187
 GameObject:
   m_ObjectHideFlags: 0

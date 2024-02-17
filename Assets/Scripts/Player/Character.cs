@@ -7,9 +7,7 @@ public class Character : MonoBehaviour
 {
 
     //Movement Data's
-    private float moveSpeed;
-    private Rigidbody rb;
-    private Vector3 movePosition = new Vector3(0,1,0);
+    private CharacterJoint joint;
 
     //Shoot Data's
     private float bulletSpeed;
@@ -18,33 +16,15 @@ public class Character : MonoBehaviour
     private Vector3 offset;
     private float fireSpeed;
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
-
     private void Start()
     {
         //Make the characters automaticaly shoot
         StartCoroutine(Shoot());
-    }
 
-    private void FixedUpdate()
-    {
-        Move();
+        //Joint the PlayerController Rigidbody
+        joint = GetComponent<CharacterJoint>();
+        joint.connectedBody = GameObject.FindGameObjectWithTag("PlayerController").GetComponent<Rigidbody>();
     }
-
-    #region Movement
-    public void Move()
-    {
-        rb.velocity = movePosition * moveSpeed;
-    }
-
-    public void ChangeMove(Vector3 newMove)
-    {
-        movePosition = newMove;
-    }
-    #endregion
 
     #region Shoot
     IEnumerator Shoot()
@@ -64,13 +44,6 @@ public class Character : MonoBehaviour
         this.bulletDamage = bulletDamage;
         this.fireSpeed = fireSpeed;
         this.offset = offset;
-    }
-    #endregion
-
-    #region Initialization
-    public void Init(float moveSpeed)
-    {
-        this.moveSpeed = moveSpeed;
     }
     #endregion
 }

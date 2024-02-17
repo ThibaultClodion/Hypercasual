@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 
 public class PlayerController : MonoBehaviour
 {
-    //Datas use for Camera
+    [Header("Camera Data's")]
     [SerializeField] private Camera mainCamera;
     [SerializeField] private FollowCharacter followCharacter;
 
-    //Character Data
+    [Header("Character Data's")]
     [SerializeField] GameObject characterGO;
     [SerializeField] GameObject bulletGO;
     private List<Character> characters = new List<Character>();
@@ -19,9 +20,15 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 5f;
     private float gauge = 0f;
 
-    // Start is called before the first frame update
+    //Components Data
+    private Vector3 movement;
+    private Rigidbody rb;
+
     void Awake()
     {
+        //Initialize components
+        rb = GetComponent<Rigidbody>();
+
         //First Character to spawn
         CreateNewCharacter();
 
@@ -29,25 +36,23 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }
 
+    private void FixedUpdate()
+    {
+        Move();
+    }
+
 
     #region Movement
+
+    private void Move()
+    {
+        rb.velocity = movement * moveSpeed;
+    }
+
     private void OnMove(InputValue inputPosition)
     {
-        //Avoid Bug if the List changes
-        List<Character> currentcharacters = new List<Character>(characters);
-
-        Vector3 movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
-
-        //Change Move for each characters
-        foreach (Character character in currentcharacters)
-        {
-            if (character != null)
-            {
-                character.ChangeMove(movement);
-            }
-        }
-
-
+        //Player Input give inputPosition of the player
+        movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
     }
     #endregion
 
@@ -80,8 +85,14 @@ public class PlayerController : MonoBehaviour
             spawnPosition = new Vector3(Random.Range(-5f, 5f), 1, Random.Range(0, 3f));
         }
 
-        GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity, transform);
-        newCharacter.GetComponent<Character>().Init(moveSpeed);
+        //Initialize the GameObject
+        GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity);
+        newCharacter.transform.SetParent(transform, true);
+
+        //Initialize the Shoot of the Character
+        newCharacter.GetComponent<Character>().ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
+
+        //Add the newCharacters to the array of characters
         characters.Add(newCharacter.GetComponent<Character>());
 
         //Update to don't have too much null object on the characters list
@@ -99,10 +110,6 @@ public class PlayerController : MonoBehaviour
             if (character == null)
             {
                 characters.Remove(character);
-            }
-            else
-            {
-                character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
             }
         }
 
