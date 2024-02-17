@@ -36,6 +36,18 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }
 
+    private void Start()
+    {
+        StartCoroutine(TestSpawn());
+    }
+
+    IEnumerator TestSpawn()
+    {
+        yield return new WaitForSeconds(3f);
+        CreateNewCharacter() ;
+        StartCoroutine(TestSpawn());
+    }
+
     private void FixedUpdate()
     {
         Move();
@@ -76,14 +88,16 @@ public class PlayerController : MonoBehaviour
     #region CharactersManagement
 
     private void CreateNewCharacter()
-    {    
+    {
         //Find a spawn Position that don't collapse with other characters
-        Vector3 spawnPosition = new Vector3(Random.Range(-5f,5f), 1, Random.Range(0, 3f));
+        Vector3 spawnPosition = GetSpawnPosition();
 
-        while(Physics.OverlapSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.5f, 3).Length > 1)
+        /*while (Physics.OverlapSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.5f, 3).Length > 1)
         {
-            spawnPosition = new Vector3(Random.Range(-5f, 5f), 1, Random.Range(0, 3f));
-        }
+            spawnPosition = GetSpawnPosition();
+        }*/
+
+        Debug.Log(Physics.OverlapSphere(spawnPosition, 0.4f, 3).Length);
 
         //Initialize the GameObject
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity);
@@ -97,6 +111,19 @@ public class PlayerController : MonoBehaviour
 
         //Update to don't have too much null object on the characters list
         UpdateCharacters();
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        //Get a position stick to another characters
+        if(characters.Count > 0)
+        {
+            return characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(-1, 2), 0, Random.Range(0, 2));
+        }
+        else
+        {
+            return new Vector3(0,1,0);
+        }
     }
 
     private void UpdateCharacters()
