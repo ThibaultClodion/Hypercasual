@@ -709,7 +709,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22499473, y: 0.000000016765215, z: -0.0000000038713464, w: 0.97436}
-  m_LocalPosition: {x: 0, y: 13, z: -16}
+  m_LocalPosition: {x: 0, y: 12, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -952,7 +952,7 @@ Transform:
   m_GameObject: {fileID: 1185906158}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22499473, y: 0.000000016765215, z: -0.0000000038713464, w: 0.97436}
-  m_LocalPosition: {x: 0, y: 13, z: -16}
+  m_LocalPosition: {x: 0, y: 12, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1101,7 +1101,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 963194227}
-  followCharacter: {fileID: 1642539435}
   characterGO: {fileID: 5955716836215132994, guid: 82bbf1602c4b9044482ad496b58cd009, type: 3}
   bulletGO: {fileID: 258810143443160155, guid: 976a4358404478e4abb1f272fb57ff3b, type: 3}
 --- !u!114 &1299892822
@@ -1333,7 +1332,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1642539434}
   - component: {fileID: 1642539436}
-  - component: {fileID: 1642539435}
   m_Layer: 0
   m_Name: Target Group
   m_TagString: Untagged
@@ -1350,24 +1348,12 @@ Transform:
   m_GameObject: {fileID: 1642539433}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1642539435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642539433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d46624761ecebf943849229cad6440fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1642539436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1384,7 +1370,7 @@ MonoBehaviour:
   m_RotationMode: 0
   m_UpdateMethod: 2
   m_Targets:
-  - target: {fileID: 1299892820}
+  - target: {fileID: 817151125}
     weight: 0.01
     radius: 0
 --- !u!1 &1929995412

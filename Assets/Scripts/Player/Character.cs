@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -7,7 +8,9 @@ public class Character : MonoBehaviour
 {
 
     //Movement Data's
-    private CharacterJoint joint;
+    private Rigidbody rb;
+    private Vector3 movePosition;
+    private float moveSpeed;
 
     //Shoot Data's
     private float bulletSpeed;
@@ -21,10 +24,35 @@ public class Character : MonoBehaviour
         //Make the characters automaticaly shoot
         StartCoroutine(Shoot());
 
-        //Joint the PlayerController Rigidbody
-        joint = GetComponent<CharacterJoint>();
-        joint.connectedBody = GameObject.FindGameObjectWithTag("PlayerController").GetComponent<Rigidbody>();
+        //Get the rigibody
+        rb = GetComponent<Rigidbody>();
     }
+
+    private void FixedUpdate()
+    {
+        if((movePosition - transform.position).magnitude > 0.05f)
+        {
+            Vector3 direction = (movePosition - transform.position).normalized;
+            rb.velocity = direction * moveSpeed;
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
+    }
+
+    #region Movement
+    public void ChangeMove(Vector3 newMove)
+    {
+        movePosition = newMove;
+    }
+
+    public void ChangeMoveSpeed(float moveSpeed)
+    {
+        this.moveSpeed = moveSpeed;     
+    }
+
+    #endregion
 
     #region Shoot
     IEnumerator Shoot()

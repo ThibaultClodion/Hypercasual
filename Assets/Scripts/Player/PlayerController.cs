@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Camera Data's")]
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private FollowCharacter followCharacter;
 
     [Header("Character Data's")]
     [SerializeField] GameObject characterGO;
@@ -21,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private float gauge = 0f;
 
     //Components Data
+    private RaycastHit hit;
     private Vector3 movement;
     private Rigidbody rb;
 
@@ -48,23 +48,50 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(TestSpawn());
     }
 
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
 
     #region Movement
 
     private void Move()
     {
-        rb.velocity = movement * moveSpeed;
+        //Avoid Bug if the List changes
+        List<Character> currentcharacters = new List<Character>(characters);
+
+        //Find if there is null character on the list
+        foreach (Character character in currentcharacters)
+        {
+            if (character == null)
+            {
+                characters.Remove(character);
+            }
+        }
     }
 
     private void OnMove(InputValue inputPosition)
     {
         //Player Input give inputPosition of the player
-        movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
+        //movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
+
+        Ray ray = mainCamera.ScreenPointToRay(inputPosition.Get<Vector2>());
+        Vector3 movePosition = Vector3.zero;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            movePosition = hit.point;
+            movePosition.y = 1;
+            movePosition.z = 0;
+        }
+
+        //Avoid Bug if the List changes
+        List<Character> currentcharacters = new List<Character>(characters);
+
+        //Find if there is null character on the list
+        foreach (Character character in currentcharacters)
+        {
+            if (character != null)
+            {
+                character.ChangeMove(movePosition);
+            }
+        }
     }
     #endregion
 
@@ -92,19 +119,13 @@ public class PlayerController : MonoBehaviour
         //Find a spawn Position that don't collapse with other characters
         Vector3 spawnPosition = GetSpawnPosition();
 
-        /*while (Physics.OverlapSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.5f, 3).Length > 1)
-        {
-            spawnPosition = GetSpawnPosition();
-        }*/
-
-        Debug.Log(Physics.OverlapSphere(spawnPosition, 0.4f, 3).Length);
-
         //Initialize the GameObject
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity);
         newCharacter.transform.SetParent(transform, true);
 
-        //Initialize the Shoot of the Character
+        //Initialize the Shoot and MoveSpeed of the Character
         newCharacter.GetComponent<Character>().ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
+        newCharacter.GetComponent<Character>().ChangeMoveSpeed(moveSpeed);
 
         //Add the newCharacters to the array of characters
         characters.Add(newCharacter.GetComponent<Character>());
@@ -115,10 +136,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetSpawnPosition()
     {
-        //Get a position stick to another characters
         if(characters.Count > 0)
         {
-            return characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(-1, 2), 0, Random.Range(0, 2));
+            return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
         }
         else
         {
@@ -139,9 +159,6 @@ public class PlayerController : MonoBehaviour
                 characters.Remove(character);
             }
         }
-
-        //Update the camera
-        followCharacter.UpdateTargets(currentcharacters);
     }
     #endregion
 
