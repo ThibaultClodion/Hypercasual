@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -8,7 +9,7 @@ public class Enemy : MonoBehaviour
     //Datas
     private float moveSpeed;
     private float actualHP;
-    private float gaugeIncrement;
+    private int gaugeIncrement;
     private GameObject targetedCharacter;
     private float detectionDistance = 30f;
     
@@ -53,7 +54,7 @@ public class Enemy : MonoBehaviour
 
     #region DataManagement
 
-    public void Init(float hp, float speed, float gauge)
+    public void Init(float hp, float speed, int gauge)
     {
         actualHP = hp;
         moveSpeed = speed;
@@ -68,7 +69,11 @@ public class Enemy : MonoBehaviour
         //If enter a collision with a player then destroy both
         if(collision.gameObject.tag == "Player")
         {
+            //Delete the character
+            GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().CharacterDestroy(collision.transform.GetComponent<Character>());
             Destroy(collision.gameObject);
+
+            //Destroy this GameObject
             Destroy(this.gameObject);
         }
     }

@@ -30,7 +30,7 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if((movePosition - transform.position).magnitude > 0.05f)
+        if((movePosition - transform.position).magnitude > 0.5f)
         {
             Vector3 direction = (movePosition - transform.position).normalized;
             rb.velocity = direction * moveSpeed;

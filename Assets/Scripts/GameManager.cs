@@ -13,16 +13,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject enemyGO;
     [SerializeField] float enemySpeed;
     [SerializeField] float enemyHp;
-    [SerializeField] float enemyGaugeIncrement;
-    private int minEnemiesSpawn = 20;
-    private int maxEnemiesSpawn = 60;
+    [SerializeField] int enemyGaugeIncrement;
+    private int minEnemiesSpawn = 50;
+    private int maxEnemiesSpawn = 200;
     
 
     [Header("Obstacles")]
     [SerializeField] GameObject obstacleGO;
     [SerializeField] float obstacleSpeed;
     [SerializeField] float obstacleHp;
-    [SerializeField] float obstacleGaugeIncrement;
+    [SerializeField] int obstacleGaugeIncrement;
     private float[] xPositions = new float[] { -5, 0, 5 };
 
     [Header("Player")]

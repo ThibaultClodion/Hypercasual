@@ -3,31 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Camera Data's")]
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private FollowCharacter followCharacter;
 
     [Header("Character Data's")]
     [SerializeField] GameObject characterGO;
     [SerializeField] GameObject bulletGO;
     private List<Character> characters = new List<Character>();
-    private float fireSpeed = 0.5f;
+    private float fireSpeed = 0.4f;
     private float fireDamage = 5f;
-    private float bulletSpeed = 15f;
+    private float bulletSpeed = 75f;
     private float moveSpeed = 5f;
-    private float gauge = 0f;
+    private int actualGauge = 0;
+    private int[] gaugeCap = new int[] {0, 5, 10, 20, 30,
+                                        50, 70, 80 ,90 ,100,
+                                        100, 150, 150 ,200 ,250,
+                                        300, 350, 400, 500, 500};
+
+    [Header("Canvas Data's")]
+    [SerializeField] Slider gaugeSlider;
+
+    [Header("Map Data's")]
+    [SerializeField] private LayerMask ignoreMoveLayer;
 
     //Components Data
+    private PlayerInput playerInput;
     private RaycastHit hit;
-    private Vector3 movement;
-    private Rigidbody rb;
 
     void Awake()
     {
-        //Initialize components
-        rb = GetComponent<Rigidbody>();
+        playerInput = GetComponent<PlayerInput>();
 
         //First Character to spawn
         CreateNewCharacter();
@@ -36,37 +47,47 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }
 
-    private void Start()
+    private void Update()
     {
-        StartCoroutine(TestSpawn());
-    }
-
-    IEnumerator TestSpawn()
-    {
-        yield return new WaitForSeconds(3f);
-        CreateNewCharacter() ;
-        StartCoroutine(TestSpawn());
+        Move(playerInput.actions["Move"].ReadValue<Vector2>());
     }
 
 
     #region Movement
 
-    private void Move()
+    private void Move(Vector2 inputPosition)
     {
-        //Avoid Bug if the List changes
-        List<Character> currentcharacters = new List<Character>(characters);
+        //Convert the inputPosition to WorldPosition
+        Ray ray = mainCamera.ScreenPointToRay(inputPosition);
+        Vector3 movePosition = Vector3.zero;
 
-        //Find if there is null character on the list
-        foreach (Character character in currentcharacters)
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
         {
-            if (character == null)
+            movePosition = hit.point;
+            movePosition.y = 1;
+        }
+
+        //This avoid player from clicking too far away
+        if(movePosition.z < 15)
+        {
+
+            movePosition.z = 0;
+
+            //Avoid Bug if the List changes
+            List<Character> currentcharacters = new List<Character>(characters);
+
+            //Change the movePosition of each character
+            foreach (Character character in currentcharacters)
             {
-                characters.Remove(character);
+                if (character != null)
+                {
+                    character.ChangeMove(movePosition);
+                }
             }
         }
     }
 
-    private void OnMove(InputValue inputPosition)
+    /*private void OnMove(InputValue inputPosition)
     {
         //Player Input give inputPosition of the player
         //movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
@@ -92,7 +113,9 @@ public class PlayerController : MonoBehaviour
                 character.ChangeMove(movePosition);
             }
         }
-    }
+    }*/
+
+
     #endregion
 
     #region Shoot
@@ -130,15 +153,16 @@ public class PlayerController : MonoBehaviour
         //Add the newCharacters to the array of characters
         characters.Add(newCharacter.GetComponent<Character>());
 
-        //Update to don't have too much null object on the characters list
-        UpdateCharacters();
+        //Updates Camera Targets
+        followCharacter.UpdateTargets(characters);
     }
 
     private Vector3 GetSpawnPosition()
     {
         if(characters.Count > 0)
         {
-            return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
+            return characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0,2));
+            //return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
         }
         else
         {
@@ -146,43 +170,48 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateCharacters()
+    public void CharacterDestroy(Character character)
     {
-        //Avoid Bug if the List changes
-        List<Character> currentcharacters = new List<Character>(characters);
+        //Reset the actualGauge
+        actualGauge = 0;
+        gaugeSlider.value = 0f;
 
-        //Find if there is null character on the list
-        foreach (Character character in currentcharacters)
-        {
-            if (character == null)
-            {
-                characters.Remove(character);
-            }
-        }
+        //Remove the character from the characters list
+        characters.Remove(character);
     }
     #endregion
 
     #region Balance
 
-    public void increaseGauge(float increment)
+    public void increaseGauge(int increment)
     {
-        gauge += increment;
+        actualGauge += increment;
+        int cap;
 
-        int cap = 1; //For test purpose
+        if (characters.Count < gaugeCap.Length)
+        {
+            cap = gaugeCap[characters.Count];
+        }
+        else
+        {
+            cap = gaugeCap[characters.Count] + (characters.Count - gaugeCap.Length) * 100;
+        }
 
         //Add a character if the gauge is greater than the cap
-        if (gauge > cap)
+        if (actualGauge > cap)
         {
             CreateNewCharacter();
-            gauge = 0;
+            increaseGauge(-cap);
+        }
+        else
+        {
+            //Update the Slider
+            gaugeSlider.value = (float)actualGauge / (float)cap;
         }
     }
 
     public float getFirePower(float seconds)
     {
-        //To avoid bug, update the Characters
-        UpdateCharacters();
-
         //Return the FirePower of the troups during x seconds
         float nbFirePerSeconds = 1 / fireSpeed;
         return nbFirePerSeconds * seconds * fireDamage * characters.Count;

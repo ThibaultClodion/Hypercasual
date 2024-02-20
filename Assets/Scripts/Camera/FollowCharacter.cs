@@ -6,6 +6,7 @@ using UnityEngine.TextCore.Text;
 
 public class FollowCharacter : MonoBehaviour
 {
+    [SerializeField] private Transform firstTarget;
     private CinemachineTargetGroup group;
 
     private void Awake()
@@ -15,24 +16,15 @@ public class FollowCharacter : MonoBehaviour
 
     public void UpdateTargets(List<Character> characters)
     {
-        //For the Initialization
-        if(characters.Count == 1) 
+        //Remove the useless Member
+        if (characters.Count == 1)
         {
-            StartCoroutine(UpdateWaitTarget(characters, 0));
+            group.RemoveMember(firstTarget);
         }
-        else
-        {
-            StartCoroutine(UpdateWaitTarget(characters, 0.5f));
-        }
-    }
-
-    IEnumerator UpdateWaitTarget(List<Character> characters, float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
 
         foreach (Character character in characters)
         {
-            if(character != null)
+            if (character != null)
             {
                 Transform characterTransform = character.GetComponent<Transform>();
 
