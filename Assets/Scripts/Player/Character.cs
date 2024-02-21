@@ -11,6 +11,7 @@ public class Character : MonoBehaviour
     private Rigidbody rb;
     private Vector3 movePosition;
     private float moveSpeed;
+    private Vector3 velocity;
 
     //Shoot Data's
     private float bulletSpeed;
@@ -29,11 +30,51 @@ public class Character : MonoBehaviour
 
         //Get the rigibody
         rb = GetComponent<Rigidbody>();
+
     }
 
     private void FixedUpdate()
     {
-        if((movePosition - transform.position).magnitude > 0.5f)
+        /*if(velocity != Vector3.zero) 
+        {
+            rb.velocity = Vector3.Lerp(rb.velocity, velocity, Time.fixedDeltaTime);
+        }
+        else
+        {
+            rb.velocity = Vector3.Lerp(rb.velocity, velocity, Time.fixedDeltaTime * 3);
+        }*/
+
+        //rb.MovePosition(transform.position + velocity * Time.deltaTime
+
+        // Get the delta position  
+        Vector3 dir = velocity - rb.position;
+        // Get the velocity required to reach the target in the next frame
+        dir /= Time.fixedDeltaTime;
+        // Clamp that to the max speed
+        dir = Vector3.ClampMagnitude(dir, moveSpeed);
+        // Apply that to the rigidbody
+        rb.velocity = dir;
+    }
+
+    #region Movement
+
+    public void ChangeMove(Vector3 newVelocity) 
+    {
+        velocity = newVelocity;
+        //velocity = newVelocity * moveSpeed * 200 * Time.fixedDeltaTime;
+    }
+
+    public void ChangeMoveSpeed(float moveSpeed)
+    {
+        this.moveSpeed = moveSpeed;     
+    }
+
+    /*public void ChangeMoveRayCast(Vector3 newMove)
+    {
+        movePosition = newMove;
+
+        //In the fixed Update
+         * if((movePosition - transform.position).magnitude > 0.5f)
         {
             Vector3 direction = (movePosition - transform.position).normalized;
             rb.velocity = direction * moveSpeed;
@@ -44,21 +85,12 @@ public class Character : MonoBehaviour
         }
     }
 
-    #region Movement
-    public void ChangeMove(Vector3 newMove)
-    {
-        movePosition = newMove;
-    }
-
-    public void DontMove()
+    public void DontMoveRaycast()
     {
         movePosition = transform.position;
     }
-
-    public void ChangeMoveSpeed(float moveSpeed)
-    {
-        this.moveSpeed = moveSpeed;     
-    }
+    
+     */
 
     #endregion
 

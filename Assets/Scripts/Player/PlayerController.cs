@@ -19,8 +19,10 @@ public class PlayerController : MonoBehaviour
     private float fireSpeed = 0.4f;
     private float fireDamage = 5f;
     private float bulletSpeed = 75f;
-    private float moveSpeed = 7.5f;
+    private float moveSpeed = 10f;
     private int actualGauge = 0;
+    private Vector3 lastMove = Vector3.zero;
+    private Vector3 initialPosition = Vector3.zero;
     private bool canMove = false;
     private int[] gaugeCap = new int[] {0, 5, 10, 20, 30,
                                         50, 70, 80 ,90 ,100,
@@ -35,7 +37,6 @@ public class PlayerController : MonoBehaviour
 
     //Components Data
     private PlayerInput playerInput;
-    private RaycastHit hit;
 
     void Awake()
     {
@@ -51,62 +52,7 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }
 
-    private void Update()
-    {
-        Move(playerInput.actions["Move"].ReadValue<Vector2>());
-    }
-
-
     #region Movement
-
-    private void Move(Vector2 inputPosition)
-    {
-        if(canMove) 
-        {
-            //Convert the inputPosition to WorldPosition
-            Ray ray = mainCamera.ScreenPointToRay(inputPosition);
-            Vector3 movePosition = Vector3.zero;
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
-            {
-                movePosition = hit.point;
-                movePosition.y = 1;
-            }
-
-            //This avoid player from clicking too far away
-            if (movePosition.z < 15)
-            {
-
-                movePosition.z = 0;
-
-                //Avoid Bug if the List changes
-                List<Character> currentcharacters = new List<Character>(characters);
-
-                //Change the movePosition of each character
-                foreach (Character character in currentcharacters)
-                {
-                    if (character != null)
-                    {
-                        character.ChangeMove(movePosition);
-                    }
-                }
-            }
-        }
-        else
-        {
-            //Avoid Bug if the List changes
-            List<Character> currentcharacters = new List<Character>(characters);
-
-            //Change the movePosition of each character
-            foreach (Character character in currentcharacters)
-            {
-                if (character != null)
-                {
-                    character.DontMove();
-                }
-            }
-        }
-    }
 
     public void CanMove(InputAction.CallbackContext context)
     {
@@ -114,6 +60,7 @@ public class PlayerController : MonoBehaviour
         {
             //The Hold begin
             case InputActionPhase.Started:
+                initialPosition = new Vector3((playerInput.actions["Move"].ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0);
                 canMove = true;
                 break;
             //The Hold end
@@ -122,34 +69,128 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-
-    /*private void OnMove(InputValue inputPosition)
+    public void Move(InputAction.CallbackContext context)
     {
-        //Player Input give inputPosition of the player
-        //movement = new Vector3((inputPosition.Get<Vector2>().x - Screen.width / 2) * 20 / Screen.width / 10, 0, 0);
-
-        Ray ray = mainCamera.ScreenPointToRay(inputPosition.Get<Vector2>());
-        Vector3 movePosition = Vector3.zero;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        //Find the problem with the initial click that make back to the center of the map
+        if (canMove)
         {
-            movePosition = hit.point;
-            movePosition.y = 1;
-            movePosition.z = 0;
-        }
+            //Get the movePosition
+            Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0) - initialPosition;
 
-        //Avoid Bug if the List changes
-        List<Character> currentcharacters = new List<Character>(characters);
+            Debug.Log(newMovement);
 
-        //Find if there is null character on the list
-        foreach (Character character in currentcharacters)
-        {
-            if (character != null)
+            //Avoid Bug if the List changes
+            List<Character> currentcharacters = new List<Character>(characters);
+
+            //Find if there is null character on the list
+            foreach (Character character in currentcharacters)
             {
-                character.ChangeMove(movePosition);
+                if (character != null)
+                {
+                    character.ChangeMove(newMovement);
+                }
+            }
+        }
+        /*else
+        {
+            //Avoid Bug if the List changes
+            List<Character> currentcharacters = new List<Character>(characters);
+
+            //Find if there is null character on the list
+            foreach (Character character in currentcharacters)
+            {
+                if (character != null)
+                {
+                    character.ChangeMove(2 * transform.position);
+                }
+            }
+        }*/
+    }
+
+
+    /*public void Move(InputAction.CallbackContext context)
+    {
+        //Get the movePosition
+        Vector3 movement = new Vector3(context.ReadValue<Vector2>().x, 0, 0);
+
+        if (canMove)
+        {
+            //Avoid Bug if the List changes
+            List<Character> currentcharacters = new List<Character>(characters);
+
+            //Find if there is null character on the list
+            foreach (Character character in currentcharacters)
+            {
+                if (character != null)
+                {
+                    character.ChangeMove(movement);
+                }
+            }
+        }
+        else
+        {
+            //Avoid Bug if the List changes
+            List<Character> currentcharacters = new List<Character>(characters);
+
+            //Find if there is null character on the list
+            foreach (Character character in currentcharacters)
+            {
+                if (character != null)
+                {
+                    character.ChangeMove(Vector3.zero);
+                }
             }
         }
     }*/
+
+    /*private void MoveRayCast(Vector2 inputPosition)
+        {
+            if(canMove) 
+            {
+                //Convert the inputPosition to WorldPosition
+                Ray ray = mainCamera.ScreenPointToRay(inputPosition);
+                Vector3 movePosition = Vector3.zero;
+
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
+                {
+                    movePosition = hit.point;
+                    movePosition.y = 1;
+                }
+
+                //This avoid player from clicking too far away
+                if (movePosition.z < 15)
+                {
+
+                    movePosition.z = 0;
+
+                    //Avoid Bug if the List changes
+                    List<Character> currentcharacters = new List<Character>(characters);
+
+                    //Change the movePosition of each character
+                    foreach (Character character in currentcharacters)
+                    {
+                        if (character != null)
+                        {
+                            character.ChangeMove(movePosition);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //Avoid Bug if the List changes
+                List<Character> currentcharacters = new List<Character>(characters);
+
+                //Change the movePosition of each character
+                foreach (Character character in currentcharacters)
+                {
+                    if (character != null)
+                    {
+                        character.DontMove();
+                    }
+                }
+            }
+        }*/
 
 
     #endregion

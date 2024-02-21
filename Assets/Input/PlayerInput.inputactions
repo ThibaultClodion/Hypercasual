@@ -28,7 +28,7 @@
                 {
                     "name": "",
                     "id": "c4acc48e-6620-4ced-82d9-3ce60357ca55",
-                    "path": "<Touchscreen>/position",
+                    "path": "<Touchscreen>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "Touch",
