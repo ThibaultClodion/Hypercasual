@@ -182,15 +182,18 @@ public class PlayerController : MonoBehaviour
         GameObject newCharacter = Instantiate(characterGO,spawnPosition, Quaternion.identity);
         newCharacter.transform.SetParent(transform, true);
 
+        //Get the Character Component
+        Character character = newCharacter.GetComponent<Character>();
+
         //Initialize the Shoot and MoveSpeed of the Character
-        newCharacter.GetComponent<Character>().ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
-        newCharacter.GetComponent<Character>().ChangeMoveSpeed(moveSpeed);
+        character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
+        character.ChangeMoveSpeed(moveSpeed);
 
         //Add the newCharacters to the array of characters
-        characters.Add(newCharacter.GetComponent<Character>());
+        characters.Add(character);
 
         //Updates Camera Targets
-        followCharacter.UpdateTargets(characters);
+        followCharacter.AddCharacter(character);
     }
 
     private Vector3 GetSpawnPosition()
@@ -199,12 +202,12 @@ public class PlayerController : MonoBehaviour
 
         if(characters.Count > 0)
         {
-            spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0,2));
-            //return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
+            spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0, 2));
 
-            if(Mathf.Abs(spawnPosition.x) > 4.5f)
+            while (Mathf.Abs(spawnPosition.x) > 7f)
             {
-                spawnPosition = GetSpawnPosition();
+                spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0, 2));
+                //return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
             }
         }
         else
@@ -223,6 +226,9 @@ public class PlayerController : MonoBehaviour
 
         //Remove the character from the characters list
         characters.Remove(character);
+
+        //Remove the character from the group target
+        followCharacter.RemoveCharacter(character);
     }
     #endregion
 

@@ -19,6 +19,9 @@ public class Character : MonoBehaviour
     private Vector3 offset;
     private float fireSpeed;
 
+    //Die Data's
+    private float explosionRadius = 50.0f;
+
     private void Start()
     {
         //Make the characters automaticaly shoot
@@ -37,7 +40,7 @@ public class Character : MonoBehaviour
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.5f);
         }
     }
 
@@ -77,6 +80,40 @@ public class Character : MonoBehaviour
         this.bulletDamage = bulletDamage;
         this.fireSpeed = fireSpeed;
         this.offset = offset;
+    }
+    #endregion
+
+    #region Collision
+    private void OnCollisionEnter(Collision collision)
+    {
+        //If enter a collision with a player then destroy both
+        if (collision.gameObject.tag == "Enemy")
+        {
+            //Delete the enemy
+            Destroy(collision.gameObject);
+
+            //Delete the character from the characters list of the PlayerController
+            GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().CharacterDestroy(this);
+
+            //Destroy all entity on a radius
+            Explosion();
+
+            //Delete this gameObject
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void Explosion()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        foreach (Collider col in colliders)
+        {
+            if (col.tag == "Enemy")
+            {
+                Destroy(col.gameObject);
+            }
+        }
     }
     #endregion
 }

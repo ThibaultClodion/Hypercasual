@@ -16,25 +16,13 @@ public class FollowCharacter : MonoBehaviour
         group.AddMember(firstTarget, 1, 0.5f);
     }
 
-    public void UpdateTargets(List<Character> characters)
+    public void AddCharacter(Character character)
     {
-        //Remove the useless Member
-        if (characters.Count == 1)
-        {
-            group.RemoveMember(firstTarget);
-        }
+        group.AddMember(character.GetComponent<Transform>(), 1, 0.5f);
+    }
 
-        foreach (Character character in characters)
-        {
-            if (character != null)
-            {
-                Transform characterTransform = character.GetComponent<Transform>();
-
-                if (group.FindMember(characterTransform) == -1)
-                {
-                    group.AddMember(characterTransform, 1, 0.5f);
-                }
-            }
-        }
+    public void RemoveCharacter(Character character) 
+    {
+        group.RemoveMember(character.GetComponent<Transform>());
     }
 }
