@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -12,6 +13,7 @@ public class FollowCharacter : MonoBehaviour
     private void Awake()
     {
         group = GetComponent<CinemachineTargetGroup>();
+        group.AddMember(firstTarget, 1, 0.5f);
     }
 
     public void UpdateTargets(List<Character> characters)

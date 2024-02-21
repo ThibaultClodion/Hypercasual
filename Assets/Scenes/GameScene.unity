@@ -226,7 +226,7 @@ Transform:
   m_GameObject: {fileID: 145052549}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.5, y: 2.5, z: 501}
+  m_LocalPosition: {x: 8, y: 2.5, z: 501}
   m_LocalScale: {x: 1, y: 5, z: 1100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -378,7 +378,7 @@ Transform:
   m_GameObject: {fileID: 587554909}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.5, y: 2.5, z: 501}
+  m_LocalPosition: {x: -8, y: 2.5, z: 501}
   m_LocalScale: {x: 1, y: 5, z: 1100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: d841f8f2a9e14e34cb368d26064e8413, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -1471,7 +1471,67 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a31b4016-e69e-48ff-b0c6-024c32534e73
+    m_ActionName: Player/Move[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1299892821}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: CanMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ae768bc4-4982-40ed-b0ba-f46dda0a5dfc
+    m_ActionName: Player/MoveV2[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2aaab373-f512-41ca-bfb9-fbff92e7fc23
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5d9e00a6-d959-440e-9162-852f70e88abc
+    m_ActionName: UI/Submit[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 71934e07-57ec-4287-b3e1-3f2347296c06
+    m_ActionName: UI/Cancel[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3e422dd6-b121-4d8d-b686-47ec49de6556
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3d32cb11-25e7-43c9-9c46-0131e73f8c9c
+    m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9f808636-7189-437f-b49a-a6ae0a7f1b12
+    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9c4465f3-fb2e-47bf-a7f6-ab9b5d0ee30d
+    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8d3661af-2791-40e4-9f6b-0f2f817c4869
+    m_ActionName: UI/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bf8d9544-8d1d-430d-a499-3be8c9fd6463
+    m_ActionName: UI/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4189bff6-8743-49e7-a058-636757c8b827
+    m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1591,7 +1651,7 @@ MonoBehaviour:
   - {fileID: 2489417172947099921}
   roadSpeed: 10
   enemyGO: {fileID: 7692199835950036531, guid: 639f1b668fd896e4ea8b5d23dd59ddf1, type: 3}
-  enemySpeed: 5
+  enemySpeed: 10
   enemyHp: 5
   enemyGaugeIncrement: 1
   obstacleGO: {fileID: 7013966029745170741, guid: 6dff1f0fe03c5f745873475d9a904587, type: 3}
@@ -1763,10 +1823,7 @@ MonoBehaviour:
   m_PositionMode: 0
   m_RotationMode: 0
   m_UpdateMethod: 2
-  m_Targets:
-  - target: {fileID: 1361512188}
-    weight: 1
-    radius: 0
+  m_Targets: []
 --- !u!114 &1642539437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1779,7 +1836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d46624761ecebf943849229cad6440fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstTarget: {fileID: 1361512188}
+  firstTarget: {fileID: 1350056413}
 --- !u!1 &1879086967
 GameObject:
   m_ObjectHideFlags: 0
@@ -1923,10 +1980,6 @@ PrefabInstance:
     - target: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
       propertyPath: m_Name
       value: Road
-      objectReference: {fileID: 0}
-    - target: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

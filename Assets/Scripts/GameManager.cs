@@ -75,11 +75,11 @@ public class GameManager : MonoBehaviour
         {
             if (Random.Range(0,20) == 0)
             {
-                InstantiateObstacle(new Vector3(xPositions[Random.Range(0, 3)], 1.5f, Random.Range(-maxZ, maxZ)), newRoad);
+                InstantiateObstacle(new Vector3(xPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
             }
             else
             {
-                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), newRoad);
+                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
             }
             
         }

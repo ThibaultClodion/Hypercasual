@@ -47,6 +47,11 @@ public class Character : MonoBehaviour
         movePosition = newMove;
     }
 
+    public void DontMove()
+    {
+        movePosition = transform.position;
+    }
+
     public void ChangeMoveSpeed(float moveSpeed)
     {
         this.moveSpeed = moveSpeed;     

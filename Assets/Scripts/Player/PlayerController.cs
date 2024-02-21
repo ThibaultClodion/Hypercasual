@@ -19,8 +19,9 @@ public class PlayerController : MonoBehaviour
     private float fireSpeed = 0.4f;
     private float fireDamage = 5f;
     private float bulletSpeed = 75f;
-    private float moveSpeed = 5f;
+    private float moveSpeed = 7.5f;
     private int actualGauge = 0;
+    private bool canMove = false;
     private int[] gaugeCap = new int[] {0, 5, 10, 20, 30,
                                         50, 70, 80 ,90 ,100,
                                         100, 150, 150 ,200 ,250,
@@ -39,7 +40,10 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+    }
 
+    private void Start()
+    {
         //First Character to spawn
         CreateNewCharacter();
 
@@ -57,22 +61,39 @@ public class PlayerController : MonoBehaviour
 
     private void Move(Vector2 inputPosition)
     {
-        //Convert the inputPosition to WorldPosition
-        Ray ray = mainCamera.ScreenPointToRay(inputPosition);
-        Vector3 movePosition = Vector3.zero;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
+        if(canMove) 
         {
-            movePosition = hit.point;
-            movePosition.y = 1;
+            //Convert the inputPosition to WorldPosition
+            Ray ray = mainCamera.ScreenPointToRay(inputPosition);
+            Vector3 movePosition = Vector3.zero;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
+            {
+                movePosition = hit.point;
+                movePosition.y = 1;
+            }
+
+            //This avoid player from clicking too far away
+            if (movePosition.z < 15)
+            {
+
+                movePosition.z = 0;
+
+                //Avoid Bug if the List changes
+                List<Character> currentcharacters = new List<Character>(characters);
+
+                //Change the movePosition of each character
+                foreach (Character character in currentcharacters)
+                {
+                    if (character != null)
+                    {
+                        character.ChangeMove(movePosition);
+                    }
+                }
+            }
         }
-
-        //This avoid player from clicking too far away
-        if(movePosition.z < 15)
+        else
         {
-
-            movePosition.z = 0;
-
             //Avoid Bug if the List changes
             List<Character> currentcharacters = new List<Character>(characters);
 
@@ -81,9 +102,24 @@ public class PlayerController : MonoBehaviour
             {
                 if (character != null)
                 {
-                    character.ChangeMove(movePosition);
+                    character.DontMove();
                 }
             }
+        }
+    }
+
+    public void CanMove(InputAction.CallbackContext context)
+    {
+        switch(context.phase) 
+        {
+            //The Hold begin
+            case InputActionPhase.Started:
+                canMove = true;
+                break;
+            //The Hold end
+            case InputActionPhase.Canceled:
+                canMove= false;
+                break;
         }
     }
 
@@ -159,15 +195,24 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetSpawnPosition()
     {
+        Vector3 spawnPosition;
+
         if(characters.Count > 0)
         {
-            return characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0,2));
+            spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0,2));
             //return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
+
+            if(Mathf.Abs(spawnPosition.x) > 4.5f)
+            {
+                spawnPosition = GetSpawnPosition();
+            }
         }
         else
         {
-            return new Vector3(0,1,0);
+            spawnPosition = new Vector3(0,1,0);
         }
+
+        return spawnPosition;
     }
 
     public void CharacterDestroy(Character character)
