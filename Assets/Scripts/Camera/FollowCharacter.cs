@@ -18,7 +18,7 @@ public class FollowCharacter : MonoBehaviour
 
     public void AddCharacter(Character character)
     {
-        group.AddMember(character.GetComponent<Transform>(), 1, 0.5f);
+        group.AddMember(character.GetComponent<Transform>(), 0.5f, 0.5f);
     }
 
     public void RemoveCharacter(Character character) 

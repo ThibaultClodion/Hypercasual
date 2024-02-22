@@ -69,6 +69,8 @@ public class PlayerController : MonoBehaviour
             //Get the movePosition
             Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0);
 
+            Debug.Log(newMovement);
+
             //Avoid Bug if the List changes
             List<Character> currentcharacters = new List<Character>(characters);
 
