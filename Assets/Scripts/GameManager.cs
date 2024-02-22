@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] float enemySpeed;
     [SerializeField] float enemyHp;
     [SerializeField] int enemyGaugeIncrement;
+
+    //Spawn Data's
     private int minEnemiesSpawn = 50;
     private int maxEnemiesSpawn = 200;
     
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float obstacleSpeed;
     [SerializeField] float obstacleHp;
     [SerializeField] int obstacleGaugeIncrement;
-    private float[] xPositions = new float[] { -5, 0, 5 };
+    private float[] xSpawnPositions = new float[] { -5, 0, 5 };
 
     [Header("Player")]
     [SerializeField] PlayerController playerController;
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
         {
             if (Random.Range(0,20) == 0)
             {
-                InstantiateObstacle(new Vector3(xPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
+                InstantiateObstacle(new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
             }
             else
             {
@@ -88,18 +90,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Enemies
-    /*private void InstantiateEnemies(GameObject parent, int nbEnemies)
-    {
-        float maxX = parent.transform.localScale.x * 5 - 1;
-        float maxZ = parent.transform.localScale.z * 5 - 1;
-
-        for(int i = 0; i < nbEnemies; i++) 
-        {
-             InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), 1, Random.Range(-maxZ, maxZ)), parent);
-        }
-    }*/
-
-
     private void InstantiateEnemy(Vector3 position, GameObject parent)
     {
         //Instantiate the GameObject
@@ -112,16 +102,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Obstacles
-    /*private void InstantiateObstacles(GameObject parent, int nbObstacles)
-    {
-        float[] xPosition = new float[] { -3, 0, 3 };
-        float maxZ = parent.transform.localScale.z * 5 - 1;
-
-        for (int i = 0; i < nbObstacles; i++)
-        {
-            InstantiateObstacle(new Vector3(xPosition[Random.Range(0, 3)], 1.5f, Random.Range(-maxZ, maxZ)), parent);
-        }
-    }*/
 
     private void InstantiateObstacle(Vector3 position, GameObject parent)
     {
@@ -164,6 +144,7 @@ public class GameManager : MonoBehaviour
         {
             return 0.5f + getCoefficient(0.5f, 0, 0.8f, 2) * min;
         }
+        //Second linear function
         else
         {
             return 0.5f + getCoefficient(0.8f, 2, 1.5f, 30) * min;

@@ -33,19 +33,6 @@ public class Obstacle : MonoBehaviour
     #endregion
 
     #region CollisionAndTrigger
-    private void OnCollisionEnter(Collision collision)
-    {
-        //If enter a collision with a player then destroy both
-        if(collision.gameObject.tag == "Player")
-        {
-            //Delete the character
-            GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().CharacterDestroy(collision.transform.GetComponent<Character>());
-            Destroy(collision.gameObject);
-
-            //Destroy this GameObject
-            Destroy(this.gameObject);
-        }
-    }
 
     private void OnTriggerEnter(Collider other)
     {

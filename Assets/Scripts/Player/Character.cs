@@ -9,9 +9,8 @@ public class Character : MonoBehaviour
 
     //Movement Data's
     private Rigidbody rb;
-    private Vector3 movePosition;
     private float moveSpeed;
-    private Vector3 velocity;
+    private Vector3 desirePosition;
 
     //Shoot Data's
     private float bulletSpeed;
@@ -35,62 +34,30 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
-        /*if(velocity != Vector3.zero) 
-        {
-            rb.velocity = Vector3.Lerp(rb.velocity, velocity, Time.fixedDeltaTime);
-        }
-        else
-        {
-            rb.velocity = Vector3.Lerp(rb.velocity, velocity, Time.fixedDeltaTime * 3);
-        }*/
-
-        //rb.MovePosition(transform.position + velocity * Time.deltaTime
-
         // Get the delta position  
-        Vector3 dir = velocity - rb.position;
+        Vector3 dir = desirePosition - rb.position;
+
         // Get the velocity required to reach the target in the next frame
         dir /= Time.fixedDeltaTime;
+
         // Clamp that to the max speed
         dir = Vector3.ClampMagnitude(dir, moveSpeed);
+
         // Apply that to the rigidbody
         rb.velocity = dir;
     }
 
     #region Movement
 
-    public void ChangeMove(Vector3 newVelocity) 
+    public void ChangeMove(Vector3 newPosition) 
     {
-        velocity = newVelocity;
-        //velocity = newVelocity * moveSpeed * 200 * Time.fixedDeltaTime;
+        desirePosition = newPosition;
     }
 
     public void ChangeMoveSpeed(float moveSpeed)
     {
         this.moveSpeed = moveSpeed;     
     }
-
-    /*public void ChangeMoveRayCast(Vector3 newMove)
-    {
-        movePosition = newMove;
-
-        //In the fixed Update
-         * if((movePosition - transform.position).magnitude > 0.5f)
-        {
-            Vector3 direction = (movePosition - transform.position).normalized;
-            rb.velocity = direction * moveSpeed;
-        }
-        else
-        {
-            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, 0.5f);
-        }
-    }
-
-    public void DontMoveRaycast()
-    {
-        movePosition = transform.position;
-    }
-    
-     */
 
     #endregion
 

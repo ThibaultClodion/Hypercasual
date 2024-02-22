@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,17 +11,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FollowCharacter followCharacter;
 
     [Header("Character Data's")]
+
+    //Character Datas
     [SerializeField] GameObject characterGO;
-    [SerializeField] GameObject bulletGO;
     private List<Character> characters = new List<Character>();
+
+    //Shoot Data's
+    [SerializeField] GameObject bulletGO;
     private float fireSpeed = 0.4f;
     private float fireDamage = 5f;
     private float bulletSpeed = 75f;
+
+    //Move Data's
     private float moveSpeed = 10f;
-    private int actualGauge = 0;
-    private Vector3 lastMove = Vector3.zero;
-    private Vector3 initialPosition = Vector3.zero;
     private bool canMove = false;
+
+    //Gauge Data's
+    private int actualGauge = 0;
     private int[] gaugeCap = new int[] {0, 5, 10, 20, 30,
                                         50, 70, 80 ,90 ,100,
                                         100, 150, 150 ,200 ,250,
@@ -31,17 +35,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Canvas Data's")]
     [SerializeField] Slider gaugeSlider;
-
-    [Header("Map Data's")]
-    [SerializeField] private LayerMask ignoreMoveLayer;
-
-    //Components Data
-    private PlayerInput playerInput;
-
-    void Awake()
-    {
-        playerInput = GetComponent<PlayerInput>();
-    }
 
     private void Start()
     {
@@ -60,7 +53,6 @@ public class PlayerController : MonoBehaviour
         {
             //The Hold begin
             case InputActionPhase.Started:
-                initialPosition = new Vector3((playerInput.actions["Move"].ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0);
                 canMove = true;
                 break;
             //The Hold end
@@ -75,9 +67,7 @@ public class PlayerController : MonoBehaviour
         if (canMove)
         {
             //Get the movePosition
-            Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0) - initialPosition;
-
-            Debug.Log(newMovement);
+            Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0);
 
             //Avoid Bug if the List changes
             List<Character> currentcharacters = new List<Character>(characters);
@@ -91,107 +81,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        /*else
-        {
-            //Avoid Bug if the List changes
-            List<Character> currentcharacters = new List<Character>(characters);
-
-            //Find if there is null character on the list
-            foreach (Character character in currentcharacters)
-            {
-                if (character != null)
-                {
-                    character.ChangeMove(2 * transform.position);
-                }
-            }
-        }*/
     }
-
-
-    /*public void Move(InputAction.CallbackContext context)
-    {
-        //Get the movePosition
-        Vector3 movement = new Vector3(context.ReadValue<Vector2>().x, 0, 0);
-
-        if (canMove)
-        {
-            //Avoid Bug if the List changes
-            List<Character> currentcharacters = new List<Character>(characters);
-
-            //Find if there is null character on the list
-            foreach (Character character in currentcharacters)
-            {
-                if (character != null)
-                {
-                    character.ChangeMove(movement);
-                }
-            }
-        }
-        else
-        {
-            //Avoid Bug if the List changes
-            List<Character> currentcharacters = new List<Character>(characters);
-
-            //Find if there is null character on the list
-            foreach (Character character in currentcharacters)
-            {
-                if (character != null)
-                {
-                    character.ChangeMove(Vector3.zero);
-                }
-            }
-        }
-    }*/
-
-    /*private void MoveRayCast(Vector2 inputPosition)
-        {
-            if(canMove) 
-            {
-                //Convert the inputPosition to WorldPosition
-                Ray ray = mainCamera.ScreenPointToRay(inputPosition);
-                Vector3 movePosition = Vector3.zero;
-
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, ~ignoreMoveLayer))
-                {
-                    movePosition = hit.point;
-                    movePosition.y = 1;
-                }
-
-                //This avoid player from clicking too far away
-                if (movePosition.z < 15)
-                {
-
-                    movePosition.z = 0;
-
-                    //Avoid Bug if the List changes
-                    List<Character> currentcharacters = new List<Character>(characters);
-
-                    //Change the movePosition of each character
-                    foreach (Character character in currentcharacters)
-                    {
-                        if (character != null)
-                        {
-                            character.ChangeMove(movePosition);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                //Avoid Bug if the List changes
-                List<Character> currentcharacters = new List<Character>(characters);
-
-                //Change the movePosition of each character
-                foreach (Character character in currentcharacters)
-                {
-                    if (character != null)
-                    {
-                        character.DontMove();
-                    }
-                }
-            }
-        }*/
-
 
     #endregion
 
