@@ -8,9 +8,11 @@ public class Character : MonoBehaviour
 {
 
     //Movement Data's
+    private bool canMove;
     private Rigidbody rb;
     private float moveSpeed;
-    private Vector3 desirePosition;
+    private Vector3 startPosition = new Vector3(0, 1, 0);
+    private Vector3 desirePosition = new Vector3(0,1,0);
 
     //Shoot Data's
     private float bulletSpeed;
@@ -34,24 +36,20 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Get the delta position  
-        Vector3 dir = desirePosition - rb.position;
-
-        // Get the velocity required to reach the target in the next frame
-        dir /= Time.fixedDeltaTime;
-
-        // Clamp that to the max speed
-        dir = Vector3.ClampMagnitude(dir, moveSpeed);
-
-        // Apply that to the rigidbody
-        rb.velocity = dir;
+        rb.velocity = ((desirePosition - transform.position + startPosition) * Time.deltaTime * moveSpeed);
     }
 
     #region Movement
 
-    public void ChangeMove(Vector3 newPosition) 
+    public void ChangeMove(Vector3 newPosition)
     {
         desirePosition = newPosition;
+    }
+
+    public void StartMove()
+    {
+        startPosition = transform.position;
+        desirePosition = Vector3.zero;
     }
 
     public void ChangeMoveSpeed(float moveSpeed)

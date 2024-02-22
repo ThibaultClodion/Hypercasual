@@ -23,7 +23,9 @@ public class PlayerController : MonoBehaviour
     private float bulletSpeed = 75f;
 
     //Move Data's
-    private float moveSpeed = 10f;
+    private PlayerInput playerInput;
+    private Vector3 initialPosition = Vector3.zero;
+    private float moveSpeed = 250f;
     private bool canMove = false;
 
     //Gauge Data's
@@ -37,12 +39,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Slider gaugeSlider;
 
     private void Start()
-    {
+    {   
+        //Get components
+        playerInput = GetComponent<PlayerInput>();
+
         //First Character to spawn
         CreateNewCharacter();
 
         //Initialize the characters shoot
         ChangeCharactersShoot();
+    }
+
+    IEnumerator TestSpawn()
+    {
+        yield return new WaitForSeconds(1);
+
+        CreateNewCharacter();
+
+        StartCoroutine(TestSpawn());
     }
 
     #region Movement
@@ -53,8 +67,24 @@ public class PlayerController : MonoBehaviour
         {
             //The Hold begin
             case InputActionPhase.Started:
+
+                initialPosition = new Vector3((playerInput.actions["Move"].ReadValue<Vector2>().x - Screen.width / 2) / Screen.width * 20, 1, 0);
+
+                //Avoid Bug if the List changes
+                List<Character> currentcharacters = new List<Character>(characters);
+
+                //Find if there is null character on the list
+                foreach (Character character in currentcharacters)
+                {
+                    if (character != null)
+                    {
+                        character.StartMove();
+                    }
+                }
+
                 canMove = true;
                 break;
+
             //The Hold end
             case InputActionPhase.Canceled:
                 canMove= false;
@@ -67,9 +97,7 @@ public class PlayerController : MonoBehaviour
         if (canMove)
         {
             //Get the movePosition
-            Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) * 20 / Screen.width, 0, 0);
-
-            Debug.Log(newMovement);
+            Vector3 newMovement = new Vector3((context.ReadValue<Vector2>().x - Screen.width / 2) / Screen.width * 20, 1, 0) - initialPosition;
 
             //Avoid Bug if the List changes
             List<Character> currentcharacters = new List<Character>(characters);
@@ -79,7 +107,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (character != null)
                 {
-                    character.ChangeMove(newMovement);
+                        character.ChangeMove(newMovement);
                 }
             }
         }
@@ -137,10 +165,9 @@ public class PlayerController : MonoBehaviour
         {
             spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0, 2));
 
-            while (Mathf.Abs(spawnPosition.x) > 7f)
+            while (Mathf.Abs(spawnPosition.x) > 7f && Physics.CheckSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.4f, 3))
             {
                 spawnPosition = characters[Random.Range(0, characters.Count)].GetComponent<Transform>().position + new Vector3(Random.Range(0, 2) * 2 - 1, 0, Random.Range(0, 2));
-                //return new Vector3(Random.Range(-9, 9), 1, Random.Range(0, 5));
             }
         }
         else
@@ -178,7 +205,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            cap = gaugeCap[characters.Count] + (characters.Count - gaugeCap.Length) * 100;
+            cap = gaugeCap[gaugeCap.Length - 1] + (characters.Count - gaugeCap.Length) * 100;
         }
 
         //Add a character if the gauge is greater than the cap
