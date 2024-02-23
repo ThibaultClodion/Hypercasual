@@ -10,9 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f9116756fbc11f49b38eadd75e7584c, type: 3}
-  m_Name: GreenShoot2
+  m_Name: GreenShoot
   m_EditorClassIdentifier: 
-  bulletsGo: {fileID: 7601029672885835983, guid: 25acb3b7857e9d64ea50246490c8d16b, type: 3}
-  fireRate: 0.4
-  bulletSpeed: 75
-  bulletDamage: 5
+  bulletsGo:
+  - {fileID: 7601029672885835983, guid: 2907ac09613fad04ab2a2e75ecf21857, type: 3}
+  - {fileID: 7601029672885835983, guid: 25acb3b7857e9d64ea50246490c8d16b, type: 3}
+  fireRate:
+  - 0.4
+  - 0.4
+  bulletSpeed:
+  - 75
+  - 75
+  bulletDamage:
+  - 5
+  - 5

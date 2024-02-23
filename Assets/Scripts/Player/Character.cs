@@ -10,12 +10,15 @@ public class Character : MonoBehaviour
 
     //Movement Data's
     private Rigidbody rb;
-    private float moveSpeed;
+    private float moveSpeed = 0f;
     private Vector3 startPosition = new Vector3(0, 1, 0);
     private Vector3 desirePosition = new Vector3(0,1,0);
 
     //Shoot Data's
-    private WeaponData actualWeapon;
+    private GameObject bulletsGo;
+    private float fireRate;
+    private float bulletSpeed;
+    private float bulletDamage;
 
     //Die Data's
     private float explosionRadius = 50.0f;
@@ -48,6 +51,22 @@ public class Character : MonoBehaviour
         desirePosition = Vector3.zero;
     }
 
+    public void StartMove(Vector3 startPosition, Vector3 desirePosition)
+    {
+        this.startPosition = startPosition;
+        this.desirePosition = desirePosition;
+    }
+
+    public Vector3 GetStartPosition()
+    {
+        return startPosition;
+    }
+
+    public Vector3 GetDesirePosition()
+    {
+        return desirePosition;
+    }
+
     public void ChangeMoveSpeed(float moveSpeed)
     {
         this.moveSpeed = moveSpeed;     
@@ -58,15 +77,15 @@ public class Character : MonoBehaviour
     #region Shoot
     IEnumerator Shoot()
     {
-        if(actualWeapon != null)
+        if(bulletsGo != null)
         {
-            yield return new WaitForSeconds(actualWeapon.fireRate);
+            yield return new WaitForSeconds(fireRate);
 
-            GameObject newBullet = Instantiate(actualWeapon.bulletsGo, transform.position + actualWeapon.bulletsGo.transform.position, Quaternion.identity);
+            GameObject newBullet = Instantiate(bulletsGo, transform.position + bulletsGo.transform.position, Quaternion.identity);
 
             foreach (Bullet bullet in newBullet.GetComponentsInChildren<Bullet>())
             {
-                bullet.GetComponent<Bullet>().Init(actualWeapon.bulletSpeed, actualWeapon.bulletDamage);
+                bullet.GetComponent<Bullet>().Init(bulletSpeed, bulletDamage);
             }
         }
         else
@@ -77,9 +96,12 @@ public class Character : MonoBehaviour
         StartCoroutine(Shoot());
     }
 
-    public void ChangeShoot(WeaponData newWeapon)
+    public void ChangeShoot(GameObject bulletsGO, float fireRate, float bulletSpeed, float bulletDamage)
     {
-        this.actualWeapon = newWeapon;
+        this.bulletsGo = bulletsGO;
+        this.fireRate = fireRate;
+        this.bulletSpeed = bulletSpeed;
+        this.bulletDamage = bulletDamage;
     }
     #endregion
 

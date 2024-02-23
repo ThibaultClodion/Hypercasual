@@ -8,10 +8,14 @@ public class Enemy : MonoBehaviour
 {
     //Datas
     private float moveSpeed;
+    private float maxHp;
     private float actualHP;
     private int gaugeIncrement;
     private GameObject targetedCharacter;
     private float detectionDistance = 40f;
+
+    //Game Manager
+    private GameManager gameManager;
     
 
     // Start is called before the first frame update
@@ -54,11 +58,18 @@ public class Enemy : MonoBehaviour
 
     #region DataManagement
 
-    public void Init(float hp, float speed, int gauge)
+    public void Init(float hp, float speed, int gauge, GameManager GM)
     {
+        maxHp = hp;
         actualHP = hp;
         moveSpeed = speed;
         gaugeIncrement = gauge;
+        gameManager = GM;
+    }
+
+    private float GetScore()
+    {
+        return 15 * maxHp + 100;
     }
 
     #endregion
@@ -77,7 +88,7 @@ public class Enemy : MonoBehaviour
             //Destroy and increment the gauge if the enemy died
             if(actualHP < 0)
             {
-                GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().increaseGauge(gaugeIncrement);
+                gameManager.IncreaseScore(GetScore());
                 Destroy(this.gameObject);
             }
         }

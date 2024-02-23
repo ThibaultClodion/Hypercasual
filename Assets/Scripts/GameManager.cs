@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -30,12 +31,46 @@ public class GameManager : MonoBehaviour
     [Header("Player")]
     [SerializeField] PlayerController playerController;
 
+    [Header("Score")]
+    [SerializeField] TextMeshProUGUI scoreText;
+    private float score = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         UpdateRoadsSpeed();
+
+        //Check if the player already play the game, if not initialize his datas
+        if (PlayerPrefs.GetInt("HasPlayed", 0) == 0)
+        {
+            //Set first time opening to false
+            PlayerPrefs.SetInt("HasPlayed", 1);
+
+            //Do your stuff here
+            PlayerPrefs.SetInt("Gems", 0);
+            PlayerPrefs.SetInt("Money", 0);
+        }
     }
 
+    #region GameManagement
+
+    public void GameStart()
+    {
+        Debug.Log("The game Start");
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("The Game is Over");
+
+        //Add money to the player
+        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + (int) score);
+
+        //Reset score
+        score = 0;
+    }
+
+    #endregion
 
     #region RoadManagement
     private void UpdateRoadsSpeed()
@@ -89,6 +124,15 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
+    #region Score
+    public void IncreaseScore(float augmentation)
+    {
+        score += augmentation;
+        scoreText.text = "Score :" + score.ToString("F0");
+    }
+
+    #endregion
+
     #region Enemies
     private void InstantiateEnemy(Vector3 position, GameObject parent)
     {
@@ -97,7 +141,7 @@ public class GameManager : MonoBehaviour
         newEnnemy.transform.SetParent(parent.transform);
 
         //Instantiate the script Enemy
-        newEnnemy.GetComponent<Enemy>().Init(enemyHp, enemySpeed, enemyGaugeIncrement);
+        newEnnemy.GetComponent<Enemy>().Init(enemyHp, enemySpeed, enemyGaugeIncrement, this);
     }
     #endregion
 
@@ -109,16 +153,23 @@ public class GameManager : MonoBehaviour
         GameObject newObstacle = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
         newObstacle.transform.SetParent(parent.transform);
 
+        int randomNum = Random.Range(0,11);
+
         //Random between Gauge and Weapon Obstacle
-        if (Random.Range(0, 2) == 0)
+        if (randomNum < 5)
         {
             //Initialize a Gauge Obstacle
-            newObstacle.GetComponent<Obstacle>().InitGaugeObstacle(obstacleHp, obstacleSpeed, obstacleGaugeIncrement);
+            newObstacle.GetComponent<Obstacle>().InitCharacterObstacle(obstacleHp, obstacleSpeed);
         }
-        else
+        else if (randomNum < 10)
         {
             //Initialize a Weapon Obstacle
             newObstacle.GetComponent<Obstacle>().InitWeaponObstacle(obstacleHp, obstacleSpeed);
+        }
+        else if(randomNum == 10)
+        {
+            //Initialize a Gem Obstacle
+            newObstacle.GetComponent<Obstacle>().InitGemObstacle(obstacleHp, obstacleSpeed);
         }
     }
     #endregion

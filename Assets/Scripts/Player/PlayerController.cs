@@ -17,10 +17,8 @@ public class PlayerController : MonoBehaviour
     private List<Character> characters = new List<Character>();
 
     //Shoot Data's
-    private WeaponData actualWeapon;
+    [SerializeField] private WeaponData actualWeapon;
     private int weaponIndex = 0;
-    [SerializeField] WeaponData[] redWeapons;
-    [SerializeField] WeaponData[] greenWeapons;
 
     //Move Data's
     private PlayerInput playerInput;
@@ -43,9 +41,6 @@ public class PlayerController : MonoBehaviour
         //Get components
         playerInput = GetComponent<PlayerInput>();
 
-        //Get the first weapon
-        actualWeapon = redWeapons[weaponIndex];
-
         //First Character to spawn
         CreateNewCharacter();
 
@@ -53,14 +48,6 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }
 
-    IEnumerator TestSpawn()
-    {
-        yield return new WaitForSeconds(1);
-
-        CreateNewCharacter();
-
-        StartCoroutine(TestSpawn());
-    }
 
     #region Movement
 
@@ -129,37 +116,26 @@ public class PlayerController : MonoBehaviour
         {
             if (character != null)
             {
-                character.ChangeShoot(actualWeapon);
+                character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex], actualWeapon.bulletSpeed[weaponIndex], actualWeapon.bulletDamage[weaponIndex]);
             }
         }
     }
 
-    public void UpgradeRedWeapon()
+    public void UpgradeWeapon()
     {
-        if(actualWeapon.name.Contains("Red") && weaponIndex < redWeapons.Length - 1)
+        if(weaponIndex < actualWeapon.bulletsGo.Length - 1)
         {
             weaponIndex++;
         }
 
-        actualWeapon = redWeapons[weaponIndex];
         ChangeCharactersShoot();
     }
 
-    public void UpgradeGreenWeapon()
-    {
-        if (actualWeapon.name.Contains("Green") && weaponIndex < greenWeapons.Length - 1)
-        {
-            weaponIndex++;
-        }
-
-        actualWeapon = greenWeapons[weaponIndex];
-        ChangeCharactersShoot();
-    }
     #endregion
 
     #region CharactersManagement
 
-    private void CreateNewCharacter()
+    public void CreateNewCharacter()
     {
         //Find a spawn Position that don't collapse with other characters
         Vector3 spawnPosition = GetSpawnPosition();
@@ -171,12 +147,13 @@ public class PlayerController : MonoBehaviour
         //Get the Character Component
         Character character = newCharacter.GetComponent<Character>();
 
-        //Initialize the Shoot and MoveSpeed of the Character
-        character.ChangeShoot(actualWeapon);
-        character.ChangeMoveSpeed(moveSpeed);
-
         //Add the newCharacters to the array of characters
         characters.Add(character);
+
+        //Initialize the Shoot and MoveSpeed of the Character
+        character.StartMove(characters[0].GetStartPosition(), characters[0].GetDesirePosition());
+        character.ChangeMoveSpeed(moveSpeed);
+        character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex], actualWeapon.bulletSpeed[weaponIndex], actualWeapon.bulletDamage[weaponIndex]);
 
         //Updates Camera Targets
         followCharacter.AddCharacter(character);
@@ -214,6 +191,12 @@ public class PlayerController : MonoBehaviour
 
         //Remove the character from the group target
         followCharacter.RemoveCharacter(character);
+
+        //Game Over
+        if(characters.Count == 0)
+        {
+            GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().GameOver();
+        }
     }
     #endregion
 
@@ -249,10 +232,10 @@ public class PlayerController : MonoBehaviour
     public float getFirePower(float seconds)
     {
         //Return the FirePower of the troups during x seconds
-        float nbFirePerSeconds = 1 / actualWeapon.fireRate;
+        float nbFirePerSeconds = 1 / actualWeapon.fireRate[weaponIndex];
 
         // Get the dps (nbFirePerSeconds * damage of a bullet * nb character * nb bullets per shoot) and multiply it by seconds
-        return nbFirePerSeconds * actualWeapon.bulletDamage * characters.Count * actualWeapon.bulletsGo.transform.childCount * seconds;
+        return nbFirePerSeconds * actualWeapon.bulletDamage[weaponIndex] * characters.Count * actualWeapon.bulletsGo[weaponIndex].transform.childCount * seconds;
     }
 
     #endregion

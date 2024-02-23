@@ -119,9 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a242adb7ce13ea749b14971d47d2f933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gaugeObstacleMaterial: {fileID: 2100000, guid: 2839435104b89a747ab50cfb70f585ba, type: 2}
-  redObstacleMaterial: {fileID: 2100000, guid: 5c95354d6099288498f2cbd383ae8728, type: 2}
-  greenObstacleMaterial: {fileID: 2100000, guid: 47d277cb64c84cb4fb3e4379e29cd431, type: 2}
+  characterObstacleMaterial: {fileID: 2100000, guid: 2839435104b89a747ab50cfb70f585ba, type: 2}
+  weaponObstacleMaterial: {fileID: 2100000, guid: 5c95354d6099288498f2cbd383ae8728, type: 2}
+  gemObstacleMaterial: {fileID: 2100000, guid: aca6ca2ada38fd147b9a39ccda8912f3, type: 2}
 --- !u!54 &-7828007415555969886
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -10,14 +10,16 @@ public class Obstacle : MonoBehaviour
     private float actualHP;
 
     //Gauge Obstacle
-    [SerializeField] Material gaugeObstacleMaterial;
-    private int gaugeIncrement;
+    private bool isCharacterObstacle = false;
+    [SerializeField] Material characterObstacleMaterial;
 
     //Weapon Obstacle
-    private bool isRedObstacle = false;
-    [SerializeField] Material redObstacleMaterial;
-    private bool isGreenObstacle = false;
-    [SerializeField] Material greenObstacleMaterial;
+    private bool isWeaponObstacle = false;
+    [SerializeField] Material weaponObstacleMaterial;
+
+    //Gem Obstacle
+    private bool isGemObstacle = false;
+    [SerializeField] Material gemObstacleMaterial;
 
     private void FixedUpdate()
     {
@@ -32,33 +34,37 @@ public class Obstacle : MonoBehaviour
     #endregion
 
     #region DataManagement
-    public void InitGaugeObstacle(float hp, float speed, int gauge)
+    public void InitCharacterObstacle(float hp, float speed)
     {
+        //Basic Information
         actualHP = hp;
         moveSpeed = speed;
-        gaugeIncrement = gauge;
-        GetComponent<MeshRenderer>().material = gaugeObstacleMaterial;
+
+        //Character information
+        isCharacterObstacle = true;
+        GetComponent<MeshRenderer>().material = characterObstacleMaterial;
     }
 
     public void InitWeaponObstacle(float hp, float speed)
     {
+        //Basic Information
         actualHP = hp;
         moveSpeed = speed;
-        gaugeIncrement = 0;
 
-        //Define which type of weapon is
-        int random = Random.Range(0, 2);
+        //Weapon information
+        isWeaponObstacle = true;
+        GetComponent<MeshRenderer>().material = weaponObstacleMaterial;
+    }
 
-        if(random == 0)
-        {
-            isRedObstacle = true;
-            GetComponent<MeshRenderer>().material = redObstacleMaterial;
-        }
-        else if(random == 1) 
-        {
-            isGreenObstacle = true;
-            GetComponent<MeshRenderer>().material = greenObstacleMaterial;
-        }
+    public void InitGemObstacle(float hp, float speed)
+    {
+        //Basic Information
+        actualHP = hp;
+        moveSpeed = speed;
+
+        //Gem information
+        isGemObstacle = true;
+        GetComponent<MeshRenderer>().material = gemObstacleMaterial;
     }
 
     #endregion
@@ -78,17 +84,17 @@ public class Obstacle : MonoBehaviour
             if (actualHP < 0)
             {
                 //Give the good upgrade
-                if(isRedObstacle)
+                if(isWeaponObstacle)
                 {
-                    GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().UpgradeRedWeapon();
+                    GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().UpgradeWeapon();
                 }
-                else if(isGreenObstacle)
+                else if(isGemObstacle)
                 {
-                    GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().UpgradeGreenWeapon();
+                    PlayerPrefs.SetInt("Gems", PlayerPrefs.GetInt("Gems") + 1);
                 }
-                else
+                else if(isCharacterObstacle)
                 {
-                    GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().increaseGauge(gaugeIncrement);
+                    GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().CreateNewCharacter();
                 }
 
                 //Destroy the gameObject

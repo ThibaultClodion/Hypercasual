@@ -10,9 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f9116756fbc11f49b38eadd75e7584c, type: 3}
-  m_Name: RedShoot2
+  m_Name: RedShoot
   m_EditorClassIdentifier: 
-  bulletsGo: {fileID: 7601029672885835983, guid: b2c4498aa7cd1b2489f200fa3a3c4be0, type: 3}
-  fireRate: 0.4
-  bulletSpeed: 75
-  bulletDamage: 5
+  bulletsGo:
+  - {fileID: 7601029672885835983, guid: ad67db97550f91f4faf65dcb810068d9, type: 3}
+  - {fileID: 7601029672885835983, guid: b2c4498aa7cd1b2489f200fa3a3c4be0, type: 3}
+  fireRate:
+  - 0.4
+  - 0.4
+  bulletSpeed:
+  - 75
+  - 75
+  bulletDamage:
+  - 5
+  - 5
