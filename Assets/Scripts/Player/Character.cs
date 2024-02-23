@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -8,18 +9,13 @@ public class Character : MonoBehaviour
 {
 
     //Movement Data's
-    private bool canMove;
     private Rigidbody rb;
     private float moveSpeed;
     private Vector3 startPosition = new Vector3(0, 1, 0);
     private Vector3 desirePosition = new Vector3(0,1,0);
 
     //Shoot Data's
-    private float bulletSpeed;
-    private float bulletDamage;
-    private GameObject bullet;
-    private Vector3 offset;
-    private float fireSpeed;
+    private WeaponData actualWeapon;
 
     //Die Data's
     private float explosionRadius = 50.0f;
@@ -62,21 +58,28 @@ public class Character : MonoBehaviour
     #region Shoot
     IEnumerator Shoot()
     {
-        yield return new WaitForSeconds(fireSpeed);
+        if(actualWeapon != null)
+        {
+            yield return new WaitForSeconds(actualWeapon.fireRate);
 
-        GameObject newBullet = Instantiate(bullet, transform.position + offset, Quaternion.identity);
-        newBullet.GetComponent<Bullet>().Init(bulletSpeed, bulletDamage);
+            GameObject newBullet = Instantiate(actualWeapon.bulletsGo, transform.position + actualWeapon.bulletsGo.transform.position, Quaternion.identity);
+
+            foreach (Bullet bullet in newBullet.GetComponentsInChildren<Bullet>())
+            {
+                bullet.GetComponent<Bullet>().Init(actualWeapon.bulletSpeed, actualWeapon.bulletDamage);
+            }
+        }
+        else
+        {
+            yield return new WaitForSeconds(1f);
+        }
 
         StartCoroutine(Shoot());
     }
 
-    public void ChangeShoot(GameObject bullet, float bulletSpeed, float bulletDamage, float fireSpeed, Vector3 offset)
+    public void ChangeShoot(WeaponData newWeapon)
     {
-        this.bullet = bullet;
-        this.bulletSpeed = bulletSpeed;
-        this.bulletDamage = bulletDamage;
-        this.fireSpeed = fireSpeed;
-        this.offset = offset;
+        this.actualWeapon = newWeapon;
     }
     #endregion
 

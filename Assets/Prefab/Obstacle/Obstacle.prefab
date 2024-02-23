@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7013966029745170741}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 2, z: 130.04999}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2839435104b89a747ab50cfb70f585ba, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,6 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a242adb7ce13ea749b14971d47d2f933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gaugeObstacleMaterial: {fileID: 2100000, guid: 2839435104b89a747ab50cfb70f585ba, type: 2}
+  redObstacleMaterial: {fileID: 2100000, guid: 5c95354d6099288498f2cbd383ae8728, type: 2}
+  greenObstacleMaterial: {fileID: 2100000, guid: 47d277cb64c84cb4fb3e4379e29cd431, type: 2}
 --- !u!54 &-7828007415555969886
 Rigidbody:
   m_ObjectHideFlags: 0

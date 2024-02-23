@@ -109,8 +109,17 @@ public class GameManager : MonoBehaviour
         GameObject newObstacle = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
         newObstacle.transform.SetParent(parent.transform);
 
-        //Initialize the script Obstacle
-        newObstacle.GetComponent<Obstacle>().Init(obstacleHp, obstacleSpeed, obstacleGaugeIncrement);
+        //Random between Gauge and Weapon Obstacle
+        if (Random.Range(0, 2) == 0)
+        {
+            //Initialize a Gauge Obstacle
+            newObstacle.GetComponent<Obstacle>().InitGaugeObstacle(obstacleHp, obstacleSpeed, obstacleGaugeIncrement);
+        }
+        else
+        {
+            //Initialize a Weapon Obstacle
+            newObstacle.GetComponent<Obstacle>().InitWeaponObstacle(obstacleHp, obstacleSpeed);
+        }
     }
     #endregion
 

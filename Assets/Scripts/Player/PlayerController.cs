@@ -17,10 +17,10 @@ public class PlayerController : MonoBehaviour
     private List<Character> characters = new List<Character>();
 
     //Shoot Data's
-    [SerializeField] GameObject bulletGO;
-    private float fireSpeed = 0.4f;
-    private float fireDamage = 5f;
-    private float bulletSpeed = 75f;
+    private WeaponData actualWeapon;
+    private int weaponIndex = 0;
+    [SerializeField] WeaponData[] redWeapons;
+    [SerializeField] WeaponData[] greenWeapons;
 
     //Move Data's
     private PlayerInput playerInput;
@@ -42,6 +42,9 @@ public class PlayerController : MonoBehaviour
     {   
         //Get components
         playerInput = GetComponent<PlayerInput>();
+
+        //Get the first weapon
+        actualWeapon = redWeapons[weaponIndex];
 
         //First Character to spawn
         CreateNewCharacter();
@@ -126,9 +129,31 @@ public class PlayerController : MonoBehaviour
         {
             if (character != null)
             {
-                character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
+                character.ChangeShoot(actualWeapon);
             }
         }
+    }
+
+    public void UpgradeRedWeapon()
+    {
+        if(actualWeapon.name.Contains("Red") && weaponIndex < redWeapons.Length - 1)
+        {
+            weaponIndex++;
+        }
+
+        actualWeapon = redWeapons[weaponIndex];
+        ChangeCharactersShoot();
+    }
+
+    public void UpgradeGreenWeapon()
+    {
+        if (actualWeapon.name.Contains("Green") && weaponIndex < greenWeapons.Length - 1)
+        {
+            weaponIndex++;
+        }
+
+        actualWeapon = greenWeapons[weaponIndex];
+        ChangeCharactersShoot();
     }
     #endregion
 
@@ -147,7 +172,7 @@ public class PlayerController : MonoBehaviour
         Character character = newCharacter.GetComponent<Character>();
 
         //Initialize the Shoot and MoveSpeed of the Character
-        character.ChangeShoot(bulletGO, bulletSpeed, fireDamage, fireSpeed, new Vector3(0, 0, 0.80f));
+        character.ChangeShoot(actualWeapon);
         character.ChangeMoveSpeed(moveSpeed);
 
         //Add the newCharacters to the array of characters
@@ -224,9 +249,12 @@ public class PlayerController : MonoBehaviour
     public float getFirePower(float seconds)
     {
         //Return the FirePower of the troups during x seconds
-        float nbFirePerSeconds = 1 / fireSpeed;
-        return nbFirePerSeconds * seconds * fireDamage * characters.Count;
+        float nbFirePerSeconds = 1 / actualWeapon.fireRate;
+
+        // Get the dps (nbFirePerSeconds * damage of a bullet * nb character * nb bullets per shoot) and multiply it by seconds
+        return nbFirePerSeconds * actualWeapon.bulletDamage * characters.Count * actualWeapon.bulletsGo.transform.childCount * seconds;
     }
 
     #endregion
 }
+

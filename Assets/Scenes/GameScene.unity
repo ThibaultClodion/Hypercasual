@@ -1167,7 +1167,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 83}
-  m_LocalScale: {x: 20, y: 10, z: 1}
+  m_LocalScale: {x: 200, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1929995413}
@@ -1360,7 +1360,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -50}
-  m_LocalScale: {x: 20, y: 10, z: 1}
+  m_LocalScale: {x: 200, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1929995413}
@@ -1473,7 +1473,12 @@ MonoBehaviour:
   mainCamera: {fileID: 963194227}
   followCharacter: {fileID: 1642539437}
   characterGO: {fileID: 5955716836215132994, guid: 82bbf1602c4b9044482ad496b58cd009, type: 3}
-  bulletGO: {fileID: 258810143443160155, guid: 976a4358404478e4abb1f272fb57ff3b, type: 3}
+  redWeapons:
+  - {fileID: 11400000, guid: 94bd1e419f4473c46ba090a59631de8d, type: 2}
+  - {fileID: 11400000, guid: 9a576fb8f65406f46a961559f91b1dd6, type: 2}
+  greenWeapons:
+  - {fileID: 11400000, guid: 0dce8247d3e2f9244924a722cbb7984c, type: 2}
+  - {fileID: 11400000, guid: 545e07722c1b0b6418024708bb92da86, type: 2}
   gaugeSlider: {fileID: 830115808}
 --- !u!114 &1299892822
 MonoBehaviour:
