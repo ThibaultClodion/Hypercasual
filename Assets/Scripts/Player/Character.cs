@@ -19,6 +19,7 @@ public class Character : MonoBehaviour
     private float fireRate;
     private float bulletSpeed;
     private float bulletDamage;
+    private float bulletRange;
 
     //Die Data's
     private float explosionRadius = 50.0f;
@@ -85,7 +86,7 @@ public class Character : MonoBehaviour
 
             foreach (Bullet bullet in newBullet.GetComponentsInChildren<Bullet>())
             {
-                bullet.GetComponent<Bullet>().Init(bulletSpeed, bulletDamage);
+                bullet.GetComponent<Bullet>().Init(bulletSpeed, bulletDamage, bulletRange);
             }
         }
         else
@@ -96,12 +97,13 @@ public class Character : MonoBehaviour
         StartCoroutine(Shoot());
     }
 
-    public void ChangeShoot(GameObject bulletsGO, float fireRate, float bulletSpeed, float bulletDamage)
+    public void ChangeShoot(GameObject bulletsGO, float fireRate, float bulletSpeed, float bulletDamage, float bulletRange)
     {
         this.bulletsGo = bulletsGO;
         this.fireRate = fireRate;
         this.bulletSpeed = bulletSpeed;
         this.bulletDamage = bulletDamage;
+        this.bulletRange = bulletRange;
     }
     #endregion
 

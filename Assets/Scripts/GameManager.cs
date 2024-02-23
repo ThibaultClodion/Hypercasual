@@ -46,9 +46,20 @@ public class GameManager : MonoBehaviour
             //Set first time opening to false
             PlayerPrefs.SetInt("HasPlayed", 1);
 
-            //Do your stuff here
+            //Economy
             PlayerPrefs.SetInt("Gems", 0);
             PlayerPrefs.SetInt("Money", 0);
+
+            //Upgrades
+            PlayerPrefs.SetInt("Upgrade_StartWeaponIndex", 0);
+            PlayerPrefs.SetInt("Upgrade_nbStartCharacter", 1);
+            PlayerPrefs.SetFloat("Upgrade_fireRateMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_bulletSpeedMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_bulletDommageMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_bulletRangeMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_moveSpeedMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_luckMultiply", 1f);
+            PlayerPrefs.SetFloat("Upgrade_scoreMultiply", 1f);
         }
     }
 
@@ -127,7 +138,10 @@ public class GameManager : MonoBehaviour
     #region Score
     public void IncreaseScore(float augmentation)
     {
-        score += augmentation;
+        //Update the score
+        score += (augmentation * PlayerPrefs.GetFloat("Upgrade_scoreMultiply"));
+
+        //Update the text
         scoreText.text = "Score :" + score.ToString("F0");
     }
 

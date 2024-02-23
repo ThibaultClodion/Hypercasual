@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
 
     //Shoot Data's
     [SerializeField] private WeaponData actualWeapon;
-    private int weaponIndex = 0;
+    private int weaponIndex;
 
     //Move Data's
     private PlayerInput playerInput;
@@ -26,23 +26,19 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 250f;
     private bool canMove = false;
 
-    //Gauge Data's
-    private int actualGauge = 0;
-    private int[] gaugeCap = new int[] {0, 5, 10, 20, 30,
-                                        50, 70, 80 ,90 ,100,
-                                        100, 150, 150 ,200 ,250,
-                                        300, 350, 400, 500, 500};
-
-    [Header("Canvas Data's")]
-    [SerializeField] Slider gaugeSlider;
-
     private void Start()
     {   
         //Get components
         playerInput = GetComponent<PlayerInput>();
 
-        //First Character to spawn
-        CreateNewCharacter();
+        //Initialize the weapon index
+        weaponIndex = PlayerPrefs.GetInt("Upgrade_StartWeaponIndex");
+
+        //Make the initial characters spawn
+        for(int i = 0; i < PlayerPrefs.GetInt("Upgrade_nbStartCharacter"); i++)
+        {
+            CreateNewCharacter();
+        }
 
         //Initialize the characters shoot
         ChangeCharactersShoot();
@@ -116,7 +112,10 @@ public class PlayerController : MonoBehaviour
         {
             if (character != null)
             {
-                character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex], actualWeapon.bulletSpeed[weaponIndex], actualWeapon.bulletDamage[weaponIndex]);
+                character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                                                         , actualWeapon.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                                                         , actualWeapon.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                                                         , actualWeapon.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"));
             }
         }
     }
@@ -152,8 +151,11 @@ public class PlayerController : MonoBehaviour
 
         //Initialize the Shoot and MoveSpeed of the Character
         character.StartMove(characters[0].GetStartPosition(), characters[0].GetDesirePosition());
-        character.ChangeMoveSpeed(moveSpeed);
-        character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex], actualWeapon.bulletSpeed[weaponIndex], actualWeapon.bulletDamage[weaponIndex]);
+        character.ChangeMoveSpeed(moveSpeed * PlayerPrefs.GetFloat("Upgrade_moveSpeedMultiply"));
+        character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                                         , actualWeapon.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                                         , actualWeapon.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                                         , actualWeapon.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"));
 
         //Updates Camera Targets
         followCharacter.AddCharacter(character);
@@ -182,10 +184,6 @@ public class PlayerController : MonoBehaviour
 
     public void CharacterDestroy(Character character)
     {
-        //Reset the actualGauge
-        actualGauge = 0;
-        gaugeSlider.value = 0f;
-
         //Remove the character from the characters list
         characters.Remove(character);
 
@@ -201,33 +199,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Balance
-
-    public void increaseGauge(int increment)
-    {
-        actualGauge += increment;
-        int cap;
-
-        if (characters.Count < gaugeCap.Length)
-        {
-            cap = gaugeCap[characters.Count];
-        }
-        else
-        {
-            cap = gaugeCap[gaugeCap.Length - 1] + (characters.Count - gaugeCap.Length) * 100;
-        }
-
-        //Add a character if the gauge is greater than the cap
-        if (actualGauge > cap)
-        {
-            CreateNewCharacter();
-            increaseGauge(-cap);
-        }
-        else
-        {
-            //Update the Slider
-            gaugeSlider.value = (float)actualGauge / (float)cap;
-        }
-    }
 
     public float getFirePower(float seconds)
     {

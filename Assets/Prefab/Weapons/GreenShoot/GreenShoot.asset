@@ -24,3 +24,6 @@ MonoBehaviour:
   bulletDamage:
   - 5
   - 5
+  bulletRange:
+  - 50
+  - 50
