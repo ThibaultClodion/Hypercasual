@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -29,17 +30,31 @@ public class GameManager : MonoBehaviour
     private float[] xSpawnPositions = new float[] { -5, 0, 5 };
 
     [Header("Player")]
-    [SerializeField] PlayerController playerController;
+    [SerializeField] private GameObject playerGO;
+    private PlayerController playerController;
+    private int currentEarnGem = 0;
+
+    [Header("Camera Data's")]
+    [SerializeField] private FollowCharacter followCharacter;
 
     [Header("Score")]
-    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI highscoreText;
     private float score = 0;
+
+    [Header("Canvas")]
+    [SerializeField] private GameObject startCanvas;
+    [SerializeField] private TextMeshProUGUI totalMoneyText;
+    [SerializeField] private TextMeshProUGUI totalGemText;
+    [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject restartCanvas;
+    [SerializeField] private TextMeshProUGUI finalScoreText;
+    [SerializeField] private TextMeshProUGUI finalMoneyText;
+    [SerializeField] private TextMeshProUGUI finalGemText;
 
     // Start is called before the first frame update
     void Start()
     {
-        UpdateRoadsSpeed();
-
         //Check if the player already play the game, if not initialize his datas
         if (PlayerPrefs.GetInt("HasPlayed", 0) == 0)
         {
@@ -60,25 +75,91 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetFloat("Upgrade_moveSpeedMultiply", 1f);
             PlayerPrefs.SetFloat("Upgrade_luckMultiply", 1f);
             PlayerPrefs.SetFloat("Upgrade_scoreMultiply", 1f);
+
+            //High Score
+            PlayerPrefs.SetFloat("Highscore", 0f);
         }
+
+        //The beginning is like restarting the game
+        GameRestart();
     }
 
     #region GameManagement
 
     public void GameStart()
     {
-        Debug.Log("The game Start");
+        //Update the canvas
+        startCanvas.gameObject.SetActive(false);
+        gameCanvas.gameObject.SetActive(true);
+
+        //Update score
+        scoreText.text = "Score :" + score.ToString("F0");
+
+        //Make the roads move
+        UpdateRoadsSpeed();
+
+        //Destroy the old Player
+        if(playerController != null)
+        {
+            Destroy(playerController.gameObject);
+        }
+
+        //Init the Player
+        GameObject player = Instantiate(playerGO);
+        playerController = player.GetComponent<PlayerController>();
+        playerController.StartToPlay(followCharacter);
     }
 
     public void GameOver()
     {
-        Debug.Log("The Game is Over");
+        //Update the canvas
+        gameCanvas.gameObject.SetActive(false);
+        restartCanvas.gameObject.SetActive(true);
 
-        //Add money to the player
-        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + (int) score);
+        //Update final Score, Money and Gems Text
+        finalScoreText.text = "Score " + score.ToString("F0");
+        finalMoneyText.text = "Money " + score.ToString("F0");
+        finalGemText.text = "Gem " + currentEarnGem.ToString();
+    }
+
+    public void GameRestart()
+    {
+        //Update the canvas
+        restartCanvas.gameObject.SetActive(false);
+        startCanvas.gameObject.SetActive(true);
+
+        //Add money and gems to the player
+        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + (int)score);
+        PlayerPrefs.SetInt("Gems", PlayerPrefs.GetInt("Gems") + currentEarnGem);
+        currentEarnGem = 0;
+
+        //Update Total Highscore, Money and Gems Text
+        highscoreText.text = PlayerPrefs.GetFloat("Highscore").ToString("F0");
+        totalMoneyText.text = PlayerPrefs.GetInt("Money").ToString();
+        totalGemText.text = PlayerPrefs.GetInt("Gems").ToString();
 
         //Reset score
+        if (score > PlayerPrefs.GetFloat("Highscore"))
+        {
+            PlayerPrefs.SetFloat("Highscore", score);
+        }
+
         score = 0;
+
+        //Destroy the old roads
+        foreach (Road road in actualRoads)
+        {
+            if(road != null) 
+            {
+                road.Destroy();
+            }
+        }
+        actualRoads.Clear();
+
+        //Instantiate the initial road
+        GameObject initialRoad = Instantiate(road, new Vector3(0,0,transform.position.z/6), Quaternion.identity);
+        actualRoads.Add(initialRoad.GetComponent<Road>());
+        actualRoads.Add(initialRoad.GetComponent<Road>());
     }
 
     #endregion
@@ -145,6 +226,10 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Score :" + score.ToString("F0");
     }
 
+    public void AddAGem()
+    {
+        currentEarnGem++;
+    }
     #endregion
 
     #region Enemies

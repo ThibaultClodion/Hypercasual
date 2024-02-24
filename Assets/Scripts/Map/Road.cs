@@ -16,4 +16,9 @@ public class Road : MonoBehaviour
     {
         movementSpeed = speed;
     }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

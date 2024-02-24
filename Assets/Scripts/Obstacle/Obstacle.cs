@@ -90,7 +90,7 @@ public class Obstacle : MonoBehaviour
                 }
                 else if(isGemObstacle)
                 {
-                    PlayerPrefs.SetInt("Gems", PlayerPrefs.GetInt("Gems") + 1);
+                    GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().AddAGem();
                 }
                 else if(isCharacterObstacle)
                 {

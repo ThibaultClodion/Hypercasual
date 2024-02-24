@@ -6,9 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Camera Data's")]
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private FollowCharacter followCharacter;
+    //Cameras data's
+    private FollowCharacter followCharacter;
 
     [Header("Character Data's")]
 
@@ -26,10 +25,13 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 250f;
     private bool canMove = false;
 
-    private void Start()
+    public void StartToPlay(FollowCharacter followCharacterScript)
     {   
         //Get components
         playerInput = GetComponent<PlayerInput>();
+
+        //Initialize the followCharacter camera script
+        followCharacter = followCharacterScript;
 
         //Initialize the weapon index
         weaponIndex = PlayerPrefs.GetInt("Upgrade_StartWeaponIndex");
