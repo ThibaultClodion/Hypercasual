@@ -97,13 +97,14 @@ public class Character : MonoBehaviour
         StartCoroutine(Shoot());
     }
 
-    public void ChangeShoot(GameObject bulletsGO, float fireRate, float bulletSpeed, float bulletDamage, float bulletRange)
+    public void ChangeShoot(GameObject bulletsGO, float fireRate, float bulletSpeed, float bulletDamage, float bulletRange, Material colorMaterial)
     {
         this.bulletsGo = bulletsGO;
         this.fireRate = fireRate;
         this.bulletSpeed = bulletSpeed;
         this.bulletDamage = bulletDamage;
         this.bulletRange = bulletRange;
+        GetComponent<MeshRenderer>().material = colorMaterial;
     }
     #endregion
 

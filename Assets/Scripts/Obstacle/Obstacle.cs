@@ -14,8 +14,8 @@ public class Obstacle : MonoBehaviour
     [SerializeField] Material characterObstacleMaterial;
 
     //Weapon Obstacle
-    private bool isWeaponObstacle = false;
-    [SerializeField] Material weaponObstacleMaterial;
+    //private bool isWeaponObstacle = false;
+    //[SerializeField] Material weaponObstacleMaterial;
 
     //Gem Obstacle
     private bool isGemObstacle = false;
@@ -45,6 +45,7 @@ public class Obstacle : MonoBehaviour
         GetComponent<MeshRenderer>().material = characterObstacleMaterial;
     }
 
+    /*
     public void InitWeaponObstacle(float hp, float speed)
     {
         //Basic Information
@@ -54,7 +55,7 @@ public class Obstacle : MonoBehaviour
         //Weapon information
         isWeaponObstacle = true;
         GetComponent<MeshRenderer>().material = weaponObstacleMaterial;
-    }
+    }*/
 
     public void InitGemObstacle(float hp, float speed)
     {
@@ -83,12 +84,13 @@ public class Obstacle : MonoBehaviour
             //The Obstacle is eliminated
             if (actualHP < 0)
             {
-                //Give the good upgrade
-                if(isWeaponObstacle)
+                /*if(isWeaponObstacle)
                 {
                     GameObject.FindGameObjectWithTag("PlayerController").GetComponent<PlayerController>().UpgradeWeapon();
-                }
-                else if(isGemObstacle)
+                }*/
+
+                //Give the good upgrade
+                if (isGemObstacle)
                 {
                     GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>().AddAGem();
                 }

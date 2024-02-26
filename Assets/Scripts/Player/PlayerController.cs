@@ -16,7 +16,12 @@ public class PlayerController : MonoBehaviour
     private List<Character> characters = new List<Character>();
 
     //Shoot Data's
-    [SerializeField] private WeaponData actualWeapon;
+    [SerializeField] private WeaponData redShoot;
+    [SerializeField] Material playerRedMaterial;
+    [SerializeField] private WeaponData greenShoot;
+    [SerializeField] Material playerGreenMaterial;
+    [SerializeField] private WeaponData yellowShoot;
+    [SerializeField] Material playerYellowMaterial;
     private int weaponIndex;
 
     //Move Data's
@@ -41,9 +46,6 @@ public class PlayerController : MonoBehaviour
         {
             CreateNewCharacter();
         }
-
-        //Initialize the characters shoot
-        ChangeCharactersShoot();
     }
 
 
@@ -104,7 +106,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Shoot
-    private void ChangeCharactersShoot()
+    /*private void ChangeCharactersShoot()
     {
         //Avoid Bug if the List changes
         List<Character> currentcharacters = new List<Character>(characters);
@@ -130,7 +132,7 @@ public class PlayerController : MonoBehaviour
         }
 
         ChangeCharactersShoot();
-    }
+    }*/
 
     #endregion
 
@@ -154,10 +156,34 @@ public class PlayerController : MonoBehaviour
         //Initialize the Shoot and MoveSpeed of the Character
         character.StartMove(characters[0].GetStartPosition(), characters[0].GetDesirePosition());
         character.ChangeMoveSpeed(moveSpeed * PlayerPrefs.GetFloat("Upgrade_moveSpeedMultiply"));
-        character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
-                                                         , actualWeapon.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                                         , actualWeapon.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
-                                                         , actualWeapon.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"));
+
+        int randomShoot = Random.Range(0, 3);
+
+        if(randomShoot == 0)
+        {
+            character.ChangeShoot(redShoot.bulletsGo[weaponIndex], redShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                                         , redShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                                         , redShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                                         , redShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
+                                                         playerRedMaterial);
+        }
+        else if(randomShoot == 1) 
+        {
+            character.ChangeShoot(greenShoot.bulletsGo[weaponIndex], greenShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                                         , greenShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                                         , greenShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                                         , greenShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
+                                                         playerGreenMaterial);
+        }
+        else
+        {
+            character.ChangeShoot(yellowShoot.bulletsGo[weaponIndex], yellowShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                             , yellowShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                             , yellowShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                             , yellowShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
+                                             playerYellowMaterial);
+        }
+
 
         //Updates Camera Targets
         followCharacter.AddCharacter(character);
@@ -205,10 +231,11 @@ public class PlayerController : MonoBehaviour
     public float getFirePower(float seconds)
     {
         //Return the FirePower of the troups during x seconds
-        float nbFirePerSeconds = 1 / actualWeapon.fireRate[weaponIndex];
+        float nbFirePerSeconds = 3 / redShoot.fireRate[weaponIndex] + yellowShoot.fireRate[weaponIndex] + greenShoot.fireRate[weaponIndex];
 
         // Get the dps (nbFirePerSeconds * damage of a bullet * nb character * nb bullets per shoot) and multiply it by seconds
-        return nbFirePerSeconds * actualWeapon.bulletDamage[weaponIndex] * characters.Count * actualWeapon.bulletsGo[weaponIndex].transform.childCount * seconds;
+        return nbFirePerSeconds * (redShoot.bulletDamage[weaponIndex] + yellowShoot.bulletDamage[weaponIndex] + greenShoot.bulletDamage[weaponIndex]) / 3 
+            * characters.Count * (redShoot.bulletsGo[weaponIndex].transform.childCount + yellowShoot.bulletsGo[weaponIndex].transform.childCount + greenShoot.bulletsGo[weaponIndex].transform.childCount) / 3 * seconds;
     }
 
     #endregion

@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Roads")]
     [SerializeField] private GameObject road;
-    [SerializeField] private List<Road> actualRoads;
+    private List<Road> actualRoads = new List<Road>();
     [SerializeField] private float roadSpeed;
 
     [Header("Enemies")]
@@ -254,16 +254,11 @@ public class GameManager : MonoBehaviour
 
         int randomNum = Random.Range(0,11);
 
-        //Random between Gauge and Weapon Obstacle
-        if (randomNum < 5)
+        //Random between Gauge and Gem Obstacle
+        if (randomNum < 10)
         {
             //Initialize a Gauge Obstacle
             newObstacle.GetComponent<Obstacle>().InitCharacterObstacle(obstacleHp, obstacleSpeed);
-        }
-        else if (randomNum < 10)
-        {
-            //Initialize a Weapon Obstacle
-            newObstacle.GetComponent<Obstacle>().InitWeaponObstacle(obstacleHp, obstacleSpeed);
         }
         else if(randomNum == 10)
         {

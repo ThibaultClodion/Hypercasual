@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4854a7e00327993498b7471a19d8d47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
-  followCharacter: {fileID: 0}
   characterGO: {fileID: 5955716836215132994, guid: 82bbf1602c4b9044482ad496b58cd009, type: 3}
-  actualWeapon: {fileID: 11400000, guid: 94bd1e419f4473c46ba090a59631de8d, type: 2}
+  redShoot: {fileID: 11400000, guid: 94bd1e419f4473c46ba090a59631de8d, type: 2}
+  playerRedMaterial: {fileID: 2100000, guid: 9e310221977d51a40a7cc92b0bc1a6a8, type: 2}
+  greenShoot: {fileID: 11400000, guid: 7e5bc70a175eeca4bb74ad1547ac1114, type: 2}
+  playerGreenMaterial: {fileID: 2100000, guid: b93ab4de6e396b940a61f9237a7dba14, type: 2}
+  yellowShoot: {fileID: 11400000, guid: 8c4307dfd37509f44b01e9f17c745852, type: 2}
+  playerYellowMaterial: {fileID: 2100000, guid: f6dce343a89a1964a9a88028b26c6fd4, type: 2}
 --- !u!114 &6864369522313266265
 MonoBehaviour:
   m_ObjectHideFlags: 0

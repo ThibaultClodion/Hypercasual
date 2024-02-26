@@ -14,16 +14,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletsGo:
   - {fileID: 7601029672885835983, guid: 2907ac09613fad04ab2a2e75ecf21857, type: 3}
-  - {fileID: 7601029672885835983, guid: 25acb3b7857e9d64ea50246490c8d16b, type: 3}
+  - {fileID: 7601029672885835983, guid: 2907ac09613fad04ab2a2e75ecf21857, type: 3}
+  - {fileID: 7601029672885835983, guid: cf095062524e7ab499b5ae988b40ae16, type: 3}
+  - {fileID: 7601029672885835983, guid: cf095062524e7ab499b5ae988b40ae16, type: 3}
+  - {fileID: 7601029672885835983, guid: cf095062524e7ab499b5ae988b40ae16, type: 3}
+  - {fileID: 7601029672885835983, guid: c11632f4c0bab1844800715eb96e99c2, type: 3}
+  - {fileID: 7601029672885835983, guid: c11632f4c0bab1844800715eb96e99c2, type: 3}
+  - {fileID: 7601029672885835983, guid: c11632f4c0bab1844800715eb96e99c2, type: 3}
+  - {fileID: 7601029672885835983, guid: a73682122a173ac43bb3fee573aa8581, type: 3}
+  - {fileID: 7601029672885835983, guid: a73682122a173ac43bb3fee573aa8581, type: 3}
   fireRate:
-  - 0.4
+  - 0.7
+  - 0.6
+  - 0.6
+  - 0.6
+  - 0.6
+  - 0.6
+  - 0.5
+  - 0.5
+  - 0.5
   - 0.4
   bulletSpeed:
-  - 75
-  - 75
+  - 50
+  - 50
+  - 50
+  - 60
+  - 60
+  - 60
+  - 60
+  - 70
+  - 70
+  - 70
   bulletDamage:
+  - 2
+  - 3
+  - 3
+  - 3
   - 5
-  - 5
+  - 7
+  - 10
+  - 17
+  - 18
+  - 20
   bulletRange:
+  - 20
+  - 20
+  - 20
+  - 30
+  - 30
+  - 30
+  - 40
+  - 40
   - 50
   - 50
