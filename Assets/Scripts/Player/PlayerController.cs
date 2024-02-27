@@ -104,39 +104,12 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Weapon
-    /*private void ChangeCharactersShoot()
-    {
-        //Avoid Bug if the List changes
-        List<Character> currentcharacters = new List<Character>(characters);
-
-        //Make the character fire
-        foreach (Character character in currentcharacters)
-        {
-            if (character != null)
-            {
-                character.ChangeShoot(actualWeapon.bulletsGo[weaponIndex], actualWeapon.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
-                                                                         , actualWeapon.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                                                         , actualWeapon.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
-                                                                         , actualWeapon.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"));
-            }
-        }
-    }
-
-    public void UpgradeWeapon()
-    {
-        if(weaponIndex < actualWeapon.bulletsGo.Length - 1)
-        {
-            weaponIndex++;
-        }
-
-        ChangeCharactersShoot();
-    }*/
 
     public void InitializeShoot(WeaponData weaponData, int weaponIndex, Character character, Material material)
     {
         character.ChangeShoot(weaponData.bulletsGo[weaponIndex], weaponData.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
                                              , weaponData.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                             , weaponData.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                             , weaponData.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDamageMultiply")
                                              , weaponData.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
                                              material);
     }

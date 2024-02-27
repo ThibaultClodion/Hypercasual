@@ -73,13 +73,21 @@ public class GameManager : MonoBehaviour
 
             //Upgrades
             PlayerPrefs.SetInt("Upgrade_nbStartCharacter", 1);
+            PlayerPrefs.SetInt("Upgrade_nbStartCharacterIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_fireRateMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_fireRateMultiplyIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_bulletSpeedMultiply", 1f);
-            PlayerPrefs.SetFloat("Upgrade_bulletDommageMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_bulletSpeedMultiplyIndex", 0);
+            PlayerPrefs.SetFloat("Upgrade_bulletDamageMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_bulletDamageMultiplyIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_bulletRangeMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_bulletRangeMultiplyIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_moveSpeedMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_moveSpeedMultiplyIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_luckMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_luckMultiplyIndex", 0);
             PlayerPrefs.SetFloat("Upgrade_scoreMultiply", 1f);
+            PlayerPrefs.SetInt("Upgrade_scoreMultiplyIndex", 0);
 
             //High Score
             PlayerPrefs.SetFloat("Highscore", 0f);
