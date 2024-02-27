@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -37,9 +38,6 @@ public class PlayerController : MonoBehaviour
 
         //Initialize the followCharacter camera script
         followCharacter = followCharacterScript;
-
-        //Initialize the weapon index
-        weaponIndex = PlayerPrefs.GetInt("Upgrade_StartWeaponIndex");
 
         //Make the initial characters spawn
         for(int i = 0; i < PlayerPrefs.GetInt("Upgrade_nbStartCharacter"); i++)
@@ -105,7 +103,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region Shoot
+    #region Weapon
     /*private void ChangeCharactersShoot()
     {
         //Avoid Bug if the List changes
@@ -134,6 +132,15 @@ public class PlayerController : MonoBehaviour
         ChangeCharactersShoot();
     }*/
 
+    public void InitializeShoot(WeaponData weaponData, int weaponIndex, Character character, Material material)
+    {
+        character.ChangeShoot(weaponData.bulletsGo[weaponIndex], weaponData.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
+                                             , weaponData.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
+                                             , weaponData.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
+                                             , weaponData.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
+                                             material);
+    }
+
     #endregion
 
     #region CharactersManagement
@@ -161,27 +168,15 @@ public class PlayerController : MonoBehaviour
 
         if(randomShoot == 0)
         {
-            character.ChangeShoot(redShoot.bulletsGo[weaponIndex], redShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
-                                                         , redShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                                         , redShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
-                                                         , redShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
-                                                         playerRedMaterial);
+            InitializeShoot(redShoot, PlayerPrefs.GetInt("Upgrade_redWeaponIndex"), character, playerRedMaterial);
         }
         else if(randomShoot == 1) 
         {
-            character.ChangeShoot(greenShoot.bulletsGo[weaponIndex], greenShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
-                                                         , greenShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                                         , greenShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
-                                                         , greenShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
-                                                         playerGreenMaterial);
+            InitializeShoot(greenShoot, PlayerPrefs.GetInt("Upgrade_greenWeaponIndex"), character, playerGreenMaterial);
         }
         else
         {
-            character.ChangeShoot(yellowShoot.bulletsGo[weaponIndex], yellowShoot.fireRate[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_fireRateMultiply")
-                                             , yellowShoot.bulletSpeed[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletSpeedMultiply")
-                                             , yellowShoot.bulletDamage[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletDommageMultiply")
-                                             , yellowShoot.bulletRange[weaponIndex] * PlayerPrefs.GetFloat("Upgrade_bulletRangeMultiply"),
-                                             playerYellowMaterial);
+            InitializeShoot(yellowShoot, PlayerPrefs.GetInt("Upgrade_yellowWeaponIndex"), character, playerYellowMaterial);
         }
 
 

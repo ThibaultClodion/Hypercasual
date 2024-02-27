@@ -44,17 +44,18 @@ public class GameManager : MonoBehaviour
 
     [Header("Canvas")]
     [SerializeField] private GameObject startCanvas;
-    [SerializeField] private TextMeshProUGUI totalMoneyText;
-    [SerializeField] private TextMeshProUGUI totalGemText;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject restartCanvas;
+    [SerializeField] private MoneyText[] moneyText;
+    [SerializeField] private GemText[] gemsText;
     [SerializeField] private TextMeshProUGUI finalScoreText;
     [SerializeField] private TextMeshProUGUI finalMoneyText;
     [SerializeField] private TextMeshProUGUI finalGemText;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        PlayerPrefs.SetInt("HasPlayed", 0);
+
         //Check if the player already play the game, if not initialize his datas
         if (PlayerPrefs.GetInt("HasPlayed", 0) == 0)
         {
@@ -65,8 +66,12 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("Gems", 0);
             PlayerPrefs.SetInt("Money", 0);
 
+            //Weapons
+            PlayerPrefs.SetInt("Upgrade_redWeaponIndex", 0);
+            PlayerPrefs.SetInt("Upgrade_greenWeaponIndex", 0);
+            PlayerPrefs.SetInt("Upgrade_yellowWeaponIndex", 0);
+
             //Upgrades
-            PlayerPrefs.SetInt("Upgrade_StartWeaponIndex", 0);
             PlayerPrefs.SetInt("Upgrade_nbStartCharacter", 1);
             PlayerPrefs.SetFloat("Upgrade_fireRateMultiply", 1f);
             PlayerPrefs.SetFloat("Upgrade_bulletSpeedMultiply", 1f);
@@ -79,6 +84,10 @@ public class GameManager : MonoBehaviour
             //High Score
             PlayerPrefs.SetFloat("Highscore", 0f);
         }
+
+        //Test purposes
+        PlayerPrefs.SetInt("Gems", 110);
+        PlayerPrefs.SetInt("Money", 1400);
 
         //The beginning is like restarting the game
         GameRestart();
@@ -133,10 +142,20 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("Gems", PlayerPrefs.GetInt("Gems") + currentEarnGem);
         currentEarnGem = 0;
 
-        //Update Total Highscore, Money and Gems Text
+        //Update Total Highscore
         highscoreText.text = PlayerPrefs.GetFloat("Highscore").ToString("F0");
-        totalMoneyText.text = PlayerPrefs.GetInt("Money").ToString();
-        totalGemText.text = PlayerPrefs.GetInt("Gems").ToString();
+
+        //Update Money Text
+        foreach(MoneyText text in moneyText) 
+        {
+            text.UpdateText();
+        }       
+        
+        //Update Gem Text
+        foreach(GemText text in gemsText) 
+        {
+            text.UpdateText();
+        }
 
         //Reset score
         if (score > PlayerPrefs.GetFloat("Highscore"))
