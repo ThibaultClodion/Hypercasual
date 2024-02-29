@@ -12,9 +12,9 @@ public class ShootButton : MonoBehaviour
 
     [Header("Weapon")]
     [SerializeField] private WeaponData weaponData;
-    [SerializeField] private bool isRed;
-    [SerializeField] private bool isGreen;
-    [SerializeField] private bool isYellow;
+    private bool isRed = false;
+    private bool isGreen = false;
+    private bool isYellow = false;
 
 
     [Header("Sliders")]
@@ -26,8 +26,23 @@ public class ShootButton : MonoBehaviour
     [Header("Buy Data's")]
     [SerializeField] private GemText gemText;
 
+
     private void Start()
     {
+        //Determinate the weapons types
+        if (weaponData.name.Contains("Red"))
+        {
+            isRed = true;
+        }
+        else if (weaponData.name.Contains("Green"))
+        {
+            isGreen = true;
+        }
+        else if (weaponData.name.Contains("Yellow"))
+        {
+            isYellow = true;
+        }
+
         //Update Datas
         UpdateDatas();
     }
@@ -61,9 +76,13 @@ public class ShootButton : MonoBehaviour
         {
             return PlayerPrefs.GetInt("Upgrade_yellowWeaponIndex");
         }
-        else
+        else if(isGreen)
         {
             return PlayerPrefs.GetInt("Upgrade_greenWeaponIndex");
+        }
+        else
+        {
+            return 0;
         }
     }
 

@@ -8,24 +8,27 @@ public class GameManager : MonoBehaviour
 {
     [Header("Roads")]
     [SerializeField] private GameObject road;
+    [SerializeField] private GameObject initialRoad;
     private List<Road> actualRoads = new List<Road>();
-    [SerializeField] private float roadSpeed;
+
+    [Header("Spawn Datas")]
+    [SerializeField] private int minEnemiesSpawn;
+    [SerializeField] private int maxEnemiesSpawn;
+    [SerializeField] private int minRoadHp;
+    [SerializeField] private int maxRoadHp;    
+    [SerializeField] private int minRoadSpeed;
+    [SerializeField] private int maxRoadSpeed;
+    private float roadSpeed;
 
     [Header("Enemies")]
     [SerializeField] GameObject enemyGO;
     [SerializeField] float enemySpeed;
-    [SerializeField] float enemyHp;
     [SerializeField] int enemyGaugeIncrement;
-
-    //Spawn Data's
-    private int minEnemiesSpawn = 50;
-    private int maxEnemiesSpawn = 200;
     
 
     [Header("Obstacles")]
     [SerializeField] GameObject obstacleGO;
     [SerializeField] float obstacleSpeed;
-    [SerializeField] float obstacleHp;
     [SerializeField] int obstacleGaugeIncrement;
     private float[] xSpawnPositions = new float[] { -5, 0, 5 };
 
@@ -33,6 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject playerGO;
     private PlayerController playerController;
     private int currentEarnGem = 0;
+    private int currentEarnMoney = 0;
 
     [Header("Camera Data's")]
     [SerializeField] private FollowCharacter followCharacter;
@@ -40,6 +44,7 @@ public class GameManager : MonoBehaviour
     [Header("Score")]
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI highscoreText;
+    private float startTime;
     private float score = 0;
 
     [Header("Canvas")]
@@ -54,8 +59,6 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        PlayerPrefs.SetInt("HasPlayed", 0);
-
         //Check if the player already play the game, if not initialize his datas
         if (PlayerPrefs.GetInt("HasPlayed", 0) == 0)
         {
@@ -101,6 +104,11 @@ public class GameManager : MonoBehaviour
         GameRestart();
     }
 
+    private void Update()
+    {
+        IncreaseScore();
+    }
+
     #region GameManagement
 
     public void GameStart()
@@ -109,11 +117,13 @@ public class GameManager : MonoBehaviour
         startCanvas.gameObject.SetActive(false);
         gameCanvas.gameObject.SetActive(true);
 
-        //Update score
+        //Update score and timer
         scoreText.text = "Score :" + score.ToString("F0");
+        startTime = Time.realtimeSinceStartup;
 
         //Make the roads move
         UpdateRoadsSpeed();
+
 
         //Destroy the old Player
         if(playerController != null)
@@ -135,7 +145,7 @@ public class GameManager : MonoBehaviour
 
         //Update final Score, Money and Gems Text
         finalScoreText.text = "Score " + score.ToString("F0");
-        finalMoneyText.text = "Money " + score.ToString("F0");
+        finalMoneyText.text = "Money " + currentEarnMoney.ToString("F0");
         finalGemText.text = "Gem " + currentEarnGem.ToString();
     }
 
@@ -146,12 +156,10 @@ public class GameManager : MonoBehaviour
         startCanvas.gameObject.SetActive(true);
 
         //Add money and gems to the player
-        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + (int)score);
+        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + currentEarnMoney);
         PlayerPrefs.SetInt("Gems", PlayerPrefs.GetInt("Gems") + currentEarnGem);
         currentEarnGem = 0;
-
-        //Update Total Highscore
-        highscoreText.text = PlayerPrefs.GetFloat("Highscore").ToString("F0");
+        currentEarnMoney = 0;
 
         //Update Money Text
         foreach(MoneyText text in moneyText) 
@@ -173,6 +181,9 @@ public class GameManager : MonoBehaviour
 
         score = 0;
 
+        //Update Total Highscore
+        highscoreText.text = PlayerPrefs.GetFloat("Highscore").ToString("F0");
+
         //Destroy the old roads
         foreach (Road road in actualRoads)
         {
@@ -184,9 +195,9 @@ public class GameManager : MonoBehaviour
         actualRoads.Clear();
 
         //Instantiate the initial road
-        GameObject initialRoad = Instantiate(road, new Vector3(0,0,transform.position.z/6), Quaternion.identity);
-        actualRoads.Add(initialRoad.GetComponent<Road>());
-        actualRoads.Add(initialRoad.GetComponent<Road>());
+        GameObject newInitialRoad = Instantiate(initialRoad, new Vector3(0,0, initialRoad.transform.localScale.z*5 - 10), Quaternion.identity);
+        actualRoads.Add(newInitialRoad.GetComponent<Road>());
+        actualRoads.Add(newInitialRoad.GetComponent<Road>());
     }
 
     #endregion
@@ -194,6 +205,9 @@ public class GameManager : MonoBehaviour
     #region RoadManagement
     private void UpdateRoadsSpeed()
     {
+        //If it grow to fast we can apply some function like SquareRoot ...
+        roadSpeed =  minRoadSpeed + maxRoadSpeed * getTime() / 20 / 60;
+
         foreach (Road road in actualRoads) 
         {
             road.ChangeSpeed(roadSpeed);
@@ -215,12 +229,13 @@ public class GameManager : MonoBehaviour
         //Update Roads Speed
         UpdateRoadsSpeed();
 
-        int nbEnemiesSpawn = Random.Range(minEnemiesSpawn, maxEnemiesSpawn);
-
-        //Define the hp of entity
+        //Get the hp of the road
         float roadHp = getRoadHp();
-        enemyHp = roadHp / nbEnemiesSpawn;
-        obstacleHp = roadHp * 10 / nbEnemiesSpawn;
+
+        //Define the ennemy and obstacles
+        int nbEnemiesSpawn = Random.Range(minEnemiesSpawn, (int) Mathf.Min(maxEnemiesSpawn,roadHp));
+        float enemyHp = roadHp / nbEnemiesSpawn;
+        float obstacleHp = roadHp * 10 / nbEnemiesSpawn;
 
         //Define the max X and Z position
         float maxX = newRoad.transform.localScale.x * 5 - 1;
@@ -231,11 +246,11 @@ public class GameManager : MonoBehaviour
         {
             if (Random.Range(0,20) == 0)
             {
-                InstantiateObstacle(new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
+                InstantiateObstacle(new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, obstacleHp);
             }
             else
             {
-                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad);
+                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, enemyHp);
             }
             
         }
@@ -243,11 +258,11 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    #region Score
-    public void IncreaseScore(float augmentation)
+    #region Score and Money
+    public void IncreaseScore()
     {
         //Update the score
-        score += (augmentation * PlayerPrefs.GetFloat("Upgrade_scoreMultiply"));
+        score += roadSpeed * Time.deltaTime;
 
         //Update the text
         scoreText.text = "Score :" + score.ToString("F0");
@@ -257,23 +272,28 @@ public class GameManager : MonoBehaviour
     {
         currentEarnGem++;
     }
+
+    public void AddMoney(float money)
+    {
+        currentEarnMoney += (int)money;
+    }
     #endregion
 
     #region Enemies
-    private void InstantiateEnemy(Vector3 position, GameObject parent)
+    private void InstantiateEnemy(Vector3 position, GameObject parent, float Hp)
     {
         //Instantiate the GameObject
         GameObject newEnnemy = Instantiate(enemyGO, parent.transform.position + position, Quaternion.identity);
         newEnnemy.transform.SetParent(parent.transform);
 
         //Instantiate the script Enemy
-        newEnnemy.GetComponent<Enemy>().Init(enemyHp, enemySpeed, enemyGaugeIncrement, this);
+        newEnnemy.GetComponent<Enemy>().Init(Hp, enemySpeed, enemyGaugeIncrement, this);
     }
     #endregion
 
     #region Obstacles
 
-    private void InstantiateObstacle(Vector3 position, GameObject parent)
+    private void InstantiateObstacle(Vector3 position, GameObject parent, float Hp)
     {
         //Instantiate the GameObject
         GameObject newObstacle = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
@@ -285,12 +305,12 @@ public class GameManager : MonoBehaviour
         if (randomNum < 10)
         {
             //Initialize a Gauge Obstacle
-            newObstacle.GetComponent<Obstacle>().InitCharacterObstacle(obstacleHp, obstacleSpeed);
+            newObstacle.GetComponent<Obstacle>().InitCharacterObstacle(Hp, obstacleSpeed);
         }
         else if(randomNum == 10)
         {
             //Initialize a Gem Obstacle
-            newObstacle.GetComponent<Obstacle>().InitGemObstacle(obstacleHp, obstacleSpeed);
+            newObstacle.GetComponent<Obstacle>().InitGemObstacle(Hp, obstacleSpeed);
         }
     }
     #endregion
@@ -298,8 +318,10 @@ public class GameManager : MonoBehaviour
     #region Balancing
     private float getTime()
     {
-        return Time.realtimeSinceStartup;
+        return Time.realtimeSinceStartup - startTime;
     }
+
+    /*Previous Balance
 
     private float getFullRoadTime()
     {
@@ -330,13 +352,12 @@ public class GameManager : MonoBehaviour
         {
             return 0.5f + getCoefficient(0.8f, 2, 1.5f, 30) * min;
         }
-    }
+    }*/
 
     private float getRoadHp()
     {
-        float roadHpmin = 0; // For Later Balance
-
-        return Mathf.Max(roadHpmin, getRatio_hp_fp() * getFirePower());
+        //If it grow to fast we can apply some function like SquareRoot ...
+        return minRoadHp + Mathf.Sqrt(maxRoadHp * getTime() / 20 / 60);
     }
 
     #endregion

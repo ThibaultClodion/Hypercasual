@@ -88,7 +88,7 @@ public class Enemy : MonoBehaviour
             //Destroy and increment the gauge if the enemy died
             if(actualHP < 0)
             {
-                gameManager.IncreaseScore(GetScore());
+                gameManager.AddMoney(GetScore());
                 Destroy(this.gameObject);
             }
         }

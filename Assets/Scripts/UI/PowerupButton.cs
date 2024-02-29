@@ -8,6 +8,7 @@ public class PowerupButton : MonoBehaviour
 {
     [Header("Display GameObject")]
     [SerializeField] GameObject description;
+    [SerializeField] GameObject[] squarePowerup;
     [SerializeField] Button descriptionButton;
     [SerializeField] private GameObject[] otherDescription;
 
@@ -17,6 +18,11 @@ public class PowerupButton : MonoBehaviour
     [Header("Power up data's")]
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private PowerUp powerup;
+
+    private void Start()
+    {
+        UpdateSquarePowerup();
+    }
 
     public void ActivateDescription()
     {
@@ -32,6 +38,7 @@ public class PowerupButton : MonoBehaviour
         UpdateDescriptionText();
 
         //Activate buy button
+        descriptionButton.onClick.RemoveAllListeners();
         descriptionButton.onClick.AddListener(BuyPowerup);
     }
 
@@ -64,6 +71,7 @@ public class PowerupButton : MonoBehaviour
                 PlayerPrefs.SetInt("Money", money - powerup.price[PlayerPrefs.GetInt(powerup.playerPrefsName + "Index")]);
                 PlayerPrefs.SetInt(powerup.playerPrefsName + "Index", PlayerPrefs.GetInt(powerup.playerPrefsName + "Index") + 1);
                 UpdateDescriptionText();
+                UpdateSquarePowerup();
                 moneyText.UpdateText();
 
                 //Apply the powerup
@@ -84,6 +92,14 @@ public class PowerupButton : MonoBehaviour
         else
         {
             Debug.Log("Already max");
+        }
+    }
+
+    public void UpdateSquarePowerup()
+    {
+        for (int i = 0; i < PlayerPrefs.GetInt(powerup.playerPrefsName + "Index"); i++)
+        {
+            squarePowerup[i].GetComponent<Image>().color = new Color(255,255,255,255);
         }
     }
 }
