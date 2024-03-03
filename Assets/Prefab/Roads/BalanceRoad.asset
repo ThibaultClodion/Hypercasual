@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab9fe7ab15a27e4bae9108ac050ddff, type: 3}
+  m_Name: BalanceRoad
+  m_EditorClassIdentifier: 
+  road: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
+  isSpawnImpose: 0
+  maxSpawnZ: 0
+  minSpawnZ: 0
+  maxSpawnX: 0
+  minSpawnX: 0
+  minEnemiesSpawn: 20
+  maxEnemiesSpawn: 40
+  obstacleRandomMax: 20

@@ -7,13 +7,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [Header("Roads")]
-    [SerializeField] private GameObject road;
+    [SerializeField] private RoadData[] roads;
     [SerializeField] private GameObject initialRoad;
     private List<Road> actualRoads = new List<Road>();
 
     [Header("Spawn Datas")]
-    [SerializeField] private int minEnemiesSpawn;
-    [SerializeField] private int maxEnemiesSpawn;
     [SerializeField] private int minRoadHp;
     [SerializeField] private int maxRoadHp;    
     [SerializeField] private int minRoadSpeed;
@@ -216,11 +214,14 @@ public class GameManager : MonoBehaviour
 
     private void CreateRoad(Vector3 position)
     {
+        //Select a Random road
+        RoadData actualRoad = roads[Random.Range(0, roads.Length)];
+
         //The -1 is here to not have a hole on the road
-        float zOffset = road.transform.localScale.z * 5 - 1;
+        float zOffset = actualRoad.road.transform.localScale.z * 5 - 1;
 
         //Instantiate the road at the right position
-        GameObject newRoad = Instantiate(road, position + new Vector3(0,0, zOffset), Quaternion.identity);
+        GameObject newRoad = Instantiate(actualRoad.road, position + new Vector3(0,0, zOffset), Quaternion.identity);
 
         //Update the actualRoads List by adding the new one and deleting the old one
         actualRoads.Remove(actualRoads[0]);
@@ -233,7 +234,7 @@ public class GameManager : MonoBehaviour
         float roadHp = getRoadHp();
 
         //Define the ennemy and obstacles
-        int nbEnemiesSpawn = Random.Range(minEnemiesSpawn, (int) Mathf.Min(maxEnemiesSpawn,roadHp));
+        int nbEnemiesSpawn = Random.Range(actualRoad.minEnemiesSpawn, (int) Mathf.Min(actualRoad.maxEnemiesSpawn, roadHp));
         float enemyHp = roadHp / nbEnemiesSpawn;
         float obstacleHp = roadHp * 10 / nbEnemiesSpawn;
 
@@ -244,7 +245,7 @@ public class GameManager : MonoBehaviour
         //Instiante the entities
         for (int i = 0; i <  nbEnemiesSpawn; i++) 
         {
-            if (Random.Range(0,20) == 0)
+            if (actualRoad.GetObstacleChance() == 0)
             {
                 InstantiateObstacle(new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, obstacleHp);
             }
@@ -252,7 +253,6 @@ public class GameManager : MonoBehaviour
             {
                 InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, enemyHp);
             }
-            
         }
     }
 

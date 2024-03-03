@@ -2122,9 +2122,6 @@ MonoBehaviour:
   - {fileID: 556414168}
   - {fileID: 2068464728}
   weaponData: {fileID: 11400000, guid: 7e5bc70a175eeca4bb74ad1547ac1114, type: 2}
-  isRed: 0
-  isGreen: 1
-  isYellow: 0
   damageSlider: {fileID: 986014030}
   fireRateSlider: {fileID: 221578525}
   bulletSpeedSlider: {fileID: 549063701}
@@ -12983,10 +12980,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16bd48e22dbdec64e824b29ff37a797d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  road: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
+  roads:
+  - {fileID: 11400000, guid: 6d5850581641da84ab097168e1adc6cd, type: 2}
+  - {fileID: 11400000, guid: 980c8705d28e4e2488bcc93a24a4c642, type: 2}
+  - {fileID: 11400000, guid: 3ce3b1411a61d394bb65aebc4105dd09, type: 2}
+  - {fileID: 11400000, guid: 52ad07c495429254fbcecad01e608ef3, type: 2}
+  - {fileID: 11400000, guid: e4a39b44906061d4ea8cde1dfcf90269, type: 2}
   initialRoad: {fileID: 6228124631035093737, guid: efcb9ff4344d38e46bcb4c0b4fc6719b, type: 3}
-  minEnemiesSpawn: 10
-  maxEnemiesSpawn: 100
   minRoadHp: 10
   maxRoadHp: 100000
   minRoadSpeed: 10
@@ -15362,9 +15362,6 @@ MonoBehaviour:
   - {fileID: 1861173271}
   - {fileID: 556414168}
   weaponData: {fileID: 11400000, guid: 8c4307dfd37509f44b01e9f17c745852, type: 2}
-  isRed: 0
-  isGreen: 0
-  isYellow: 1
   damageSlider: {fileID: 922739201}
   fireRateSlider: {fileID: 227171269}
   bulletSpeedSlider: {fileID: 1866076218}
@@ -15940,9 +15937,6 @@ MonoBehaviour:
   - {fileID: 1861173271}
   - {fileID: 2068464728}
   weaponData: {fileID: 11400000, guid: 94bd1e419f4473c46ba090a59631de8d, type: 2}
-  isRed: 1
-  isGreen: 0
-  isYellow: 0
   damageSlider: {fileID: 61219874}
   fireRateSlider: {fileID: 1843013294}
   bulletSpeedSlider: {fileID: 344812986}
