@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class GameManager : MonoBehaviour
 {
@@ -247,11 +248,11 @@ public class GameManager : MonoBehaviour
         {
             if (actualRoad.GetObstacleChance() == 0)
             {
-                InstantiateObstacle(new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, obstacleHp);
+                InstantiateObstacle(maxX, maxZ, newRoad, obstacleHp);
             }
             else
             {
-                InstantiateEnemy(new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ)), newRoad, enemyHp);
+                InstantiateEnemy(maxX, maxZ, newRoad, enemyHp);
             }
         }
     }
@@ -280,10 +281,18 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Enemies
-    private void InstantiateEnemy(Vector3 position, GameObject parent, float Hp)
+    private void InstantiateEnemy(float maxX, float maxZ, GameObject parent, float Hp)
     {
+
+        Vector3 spawnPosition = parent.transform.position + new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ));
+
+        while(Physics.CheckSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.4f, 3))
+        {
+            spawnPosition = parent.transform.position + new Vector3(Random.Range(-maxX, maxX), enemyGO.transform.position.y, Random.Range(-maxZ, maxZ));
+        }
+
         //Instantiate the GameObject
-        GameObject newEnnemy = Instantiate(enemyGO, parent.transform.position + position, Quaternion.identity);
+        GameObject newEnnemy = Instantiate(enemyGO, spawnPosition, Quaternion.identity);
         newEnnemy.transform.SetParent(parent.transform);
 
         //Instantiate the script Enemy
@@ -293,10 +302,17 @@ public class GameManager : MonoBehaviour
 
     #region Obstacles
 
-    private void InstantiateObstacle(Vector3 position, GameObject parent, float Hp)
+    private void InstantiateObstacle(float maxX, float maxZ, GameObject parent, float Hp)
     {
+        Vector3 spawnPosition = parent.transform.position + new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ));
+
+        while (Physics.CheckSphere(spawnPosition - new Vector3(0, 0.5f, 0), 0.4f, 3))
+        {
+            spawnPosition = parent.transform.position + new Vector3(xSpawnPositions[Random.Range(0, 3)], obstacleGO.transform.position.y, Random.Range(-maxZ, maxZ));
+        }
+
         //Instantiate the GameObject
-        GameObject newObstacle = Instantiate(obstacleGO, parent.transform.position + position, Quaternion.identity);
+        GameObject newObstacle = Instantiate(obstacleGO, spawnPosition, Quaternion.identity);
         newObstacle.transform.SetParent(parent.transform);
 
         int randomNum = Random.Range(0,11);

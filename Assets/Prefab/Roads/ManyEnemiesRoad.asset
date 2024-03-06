@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ManyEnemiesRoad
   m_EditorClassIdentifier: 
   road: {fileID: 6228124631035093737, guid: c40a2194ecf6c8f49bae031b1bf9b3eb, type: 3}
-  minEnemiesSpawn: 30
+  minEnemiesSpawn: 40
   maxEnemiesSpawn: 60
   obstacleRandomMax: 999999999
